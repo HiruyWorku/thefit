@@ -37,11 +37,15 @@ The app stores your uploaded photo as a PNG, preserving its contents and correct
 
 Photos must be PNG, JPEG, or WebP, smaller than 18 MB and no larger than 40 megapixels. Saved items and photos stay in `data/library.json` and `data/imported/`. Unsaved forms last for the current page session.
 
+To load the bundled **41-piece sample wardrobe**, stop the app server and run `npm run seed:wardrobe`, then start it again. The import preserves existing items and edits and skips duplicate IDs. It uses no paid APIs. The 28 PNGimg stock photos require attribution and **noncommercial use**; see [the sample wardrobe and image credits](sample-wardrobe/README.md). Local uploads, API keys, and reference photos remain ignored by Git.
+
 ## Daily suggestions
 
 The Daily suggestions panel uses **Use my location** to request browser location permission and fetch weather from Open-Meteo. Location access requires HTTPS or localhost. Approximate coordinates are sent to the weather provider and are not saved by this app. Weather refreshes every 30 minutes while the page is open; use **Refresh location** after moving.
 
-Suggestions use the current feels-like temperature (hot: 25°C or above; cool: below 15°C) and today's rain chance. The panel selects only existing clothing items using their categories, names, and details, with pictures ordered hat, top, jacket when needed, bottoms, shoes. Add specific names or details such as “T-shirt,” “shorts,” and “waterproof” for better matches. Missing categories are noted; matching is a simple rule-based starting point, not AI styling. Click a suggested photo to edit it, or try another combination of equally suitable pieces.
+Suggestions compare complete outfits using the current feels-like temperature, wind, and the next three forecast hours when available. Choose **Everyday**, **Smart casual**, or **Active** to guide the look. Garment names and details are checked before saved categories, so a puffer accidentally labeled as a top cannot become a second jacket. Each outfit contains a base top, suitable bottoms and shoes, at most one outer layer, and optional weather-appropriate headwear.
+
+The local engine balances combined layer warmth, rain coverage, formality, and color harmony. Each piece has a short explanation; wardrobe gaps and inferred category corrections are shown. **Try another look** cycles through distinct combinations close to the best score without relaxing the weather rules. This uses descriptive metadata and transparent heuristics, not a vision model or measured clothing performance. Recommendations do not call OpenAI, Photoroom, or Decart. See [the algorithm notes](docs/outfit-recommendations.md) for the rules and limitations.
 
 ## Preview an outfit on yourself
 
@@ -78,6 +82,7 @@ The bundled AI skills remain available for separately requested workflows, but t
 | Command | Purpose |
 | --- | --- |
 | `npm run dev` | Start the development server at `http://localhost:5173`. |
+| `npm run seed:wardrobe` | Add the bundled sample wardrobe to local storage without replacing existing items. |
 | `npm run build` | Build the frontend into `dist/`. |
 | `npm run preview` | Serve the built app locally at `http://localhost:4173`. |
 | `npm run check` | Run the production build check. |

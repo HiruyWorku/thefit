@@ -926,6 +926,7 @@ button { font: inherit; }
 .daily-location { color: var(--paper); background: var(--ink); }
 .daily-location:disabled { opacity: .5; cursor: wait; }
 .daily-shuffle { background: transparent; color: var(--ink); border-color: var(--line); }
+.daily-shuffle:disabled { opacity: .65; cursor: default; }
 .daily-note, .daily-credit { font-size: 10px; line-height: 1.65; color: var(--muted); max-width: 360px; }
 .daily-error { color: var(--accent); }
 .daily-credit { margin-top: auto; padding-top: 16px; text-underline-offset: 3px; }
@@ -936,6 +937,9 @@ button { font: inherit; }
 .daily-look-heading { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
 .daily-look-heading h3 { margin: 0; font-size: 17px; font-weight: 500; letter-spacing: -.025em; }
 .daily-look-heading > span { color: var(--muted); font-size: 10px; }
+.daily-occasion { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: 14px 0 4px; color: var(--muted); font-size: 12px; }
+.daily-occasion select { min-height: 40px; max-width: 65%; padding: 7px 30px 7px 10px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: transparent; font: inherit; cursor: pointer; }
+.daily-occasion select:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .daily-outfit { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
 .daily-outfit li { border-bottom: 1px solid #e7e1d7; }
 .daily-outfit button { width: 100%; display: grid; grid-template-columns: 20px 100px minmax(0, 1fr) 16px; align-items: center; gap: 14px; padding: 9px 0; background: transparent; border: 0; text-align: left; color: var(--ink); cursor: pointer; border-radius: 8px; }
@@ -946,6 +950,9 @@ button { font: inherit; }
 .daily-item-label { display: grid; gap: 5px; min-width: 0; }
 .daily-slot { text-transform: uppercase; letter-spacing: .12em; font-size: 9px; color: var(--muted); }
 .daily-item-name { font-size: 13px; overflow-wrap: anywhere; }
+.daily-item-reason { color: var(--muted); font-size: 11px; line-height: 1.45; overflow-wrap: anywhere; }
+.daily-outfit-notes { margin: 14px 0 0; padding-left: 16px; color: var(--muted); font-size: 11px; line-height: 1.6; }
+.daily-outfit-notes li + li { margin-top: 5px; }
 .daily-item-arrow { color: var(--muted); font-size: 17px; }
 .daily-match-help { margin-top: 16px; font-size: 10px; color: var(--muted); }
 .daily-match-help summary { cursor: pointer; }
