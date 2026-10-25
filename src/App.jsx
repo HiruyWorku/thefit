@@ -65,58 +65,7 @@ function rgbToHex(red, green, blue) {
   return `#${[red, green, blue].map((value) => Math.max(0, Math.min(255, value)).toString(16).padStart(2, "0")).join("")}`;
 }
 
-function colorDistance(first, second) {
-  return Math.sqrt(
-    ((first.red - second.red) ** 2)
-    + ((first.green - second.green) ** 2)
-    + ((first.blue - second.blue) ** 2),
-  );
-}
 
-function extractPalette(image) {
-  const canvas = document.createElement("canvas");
-  canvas.width = 72;
-  canvas.height = 72;
-  const context = canvas.getContext("2d", { willReadFrequently: true });
-  context.clearRect(0, 0, canvas.width, canvas.height);
-  context.drawImage(image, 0, 0, canvas.width, canvas.height);
-
-  const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
-  const buckets = new Map();
-
-  for (let index = 0; index < pixels.length; index += 4) {
-    const alpha = pixels[index + 3];
-    if (alpha < 72) continue;
-
-    const red = pixels[index];
-    const green = pixels[index + 1];
-    const blue = pixels[index + 2];
-    const key = `${Math.round(red / 28)}-${Math.round(green / 28)}-${Math.round(blue / 28)}`;
-    const current = buckets.get(key) || { red: 0, green: 0, blue: 0, count: 0 };
-    current.red += red;
-    current.green += green;
-    current.blue += blue;
-    current.count += 1;
-    buckets.set(key, current);
-  }
-
-  const ranked = [...buckets.values()]
-    .map((bucket) => ({
-      red: Math.round(bucket.red / bucket.count),
-      green: Math.round(bucket.green / bucket.count),
-      blue: Math.round(bucket.blue / bucket.count),
-      count: bucket.count,
-    }))
-    .sort((a, b) => b.count - a.count);
-
-  const selected = [];
-  for (const color of ranked) {
-    if (selected.every((existing) => colorDistance(existing, color) > 38)) selected.push(color);
-    if (selected.length === 5) break;
-  }
-
-  return selected.map((color) => rgbToHex(color.red, color.green, color.blue));
-}
 
 function buildSamplingCanvas(image) {
   const canvas = document.createElement("canvas");
@@ -218,25 +167,11 @@ function TagEditor({ tags, onChange }) {
   );
 }
 
-function ColorControl({ label, field, value, palette, onChange, sampling, setSampling, optional = false, onClear, onAdd }) {
-  if (optional && !value) {
-    return (
-      <div className="color-slot empty-color-slot">
-        <div className="color-slot-heading">
-          <span>{label}</span>
-          <small>Optional</small>
-        </div>
-        <p>No distinct secondary color detected.</p>
-        <button className="add-secondary-button" type="button" onClick={onAdd}>Add secondary color</button>
-      </div>
-    );
-  }
-
+function ColorControl({ label, field, value, onChange, sampling, setSampling }) {
   return (
     <div className="color-slot">
       <div className="color-slot-heading">
         <span>{label}</span>
-        {optional && <button type="button" onClick={onClear}>Remove</button>}
       </div>
       <label className="selected-color-control">
         <input
@@ -250,23 +185,6 @@ function ColorControl({ label, field, value, palette, onChange, sampling, setSam
           <strong>{value || "Custom"}</strong>
         </span>
       </label>
-      <div className="suggestion-heading">
-        <span>Image suggestions</span>
-        <small>Click to apply</small>
-      </div>
-      <div className="palette" aria-label={`${label} suggestions from image`}>
-        {palette.map((color) => (
-          <button
-            type="button"
-            key={color}
-            className={value?.toLowerCase() === color.toLowerCase() ? "active" : ""}
-            style={{ backgroundColor: color }}
-            onClick={() => onChange(color)}
-            aria-label={`Use ${color} as ${label.toLowerCase()}`}
-            title={color}
-          />
-        ))}
-      </div>
       <button
         className={`sample-button${sampling === field ? " active" : ""}`}
         type="button"
@@ -278,9 +196,7 @@ function ColorControl({ label, field, value, palette, onChange, sampling, setSam
   );
 }
 
-function ItemEditor({ draft, setDraft, palette, sampling, setSampling, sampleStatus }) {
-  const suggestedSecondary = palette.find((color) => color.toLowerCase() !== draft.color?.toLowerCase()) || "#9a9286";
-
+function ItemEditor({ draft, setDraft, sampling, setSampling, sampleStatus }) {
   return (
     <div className="item-editor">
       <label className="field">
@@ -295,31 +211,18 @@ function ItemEditor({ draft, setDraft, palette, sampling, setSampling, sampleSta
       <CategoryFields part={draft.part} garmentType={draft.garmentType} prefix="edit-item" onChange={patch => setDraft(current => ({ ...current, ...patch }))} />
 
       <fieldset className="color-field">
-        <legend>Colors</legend>
+        <legend>Color</legend>
         <div className="colors-editor">
           <ColorControl
-            label="Primary color"
+            label="Color"
             field="primary"
             value={draft.color}
-            palette={palette}
             onChange={(color) => setDraft((current) => ({ ...current, color }))}
             sampling={sampling}
             setSampling={setSampling}
           />
-          <ColorControl
-            label="Secondary color"
-            field="secondary"
-            value={draft.secondaryColor}
-            palette={palette}
-            onChange={(secondaryColor) => setDraft((current) => ({ ...current, secondaryColor }))}
-            sampling={sampling}
-            setSampling={setSampling}
-            optional
-            onClear={() => setDraft((current) => ({ ...current, secondaryColor: null }))}
-            onAdd={() => setDraft((current) => ({ ...current, secondaryColor: suggestedSecondary }))}
-          />
         </div>
-        <p className="color-help" aria-live="polite">{sampling ? `Click anywhere on the garment to sample the ${sampling} color.` : sampleStatus || "Primary colors come from the image. A secondary is suggested only when a distinct color has meaningful coverage."}</p>
+        <p className="color-help" aria-live="polite">{sampling ? `Click anywhere on the garment to sample the color.` : sampleStatus || "Choose a color or pick a color from the image."}</p>
       </fieldset>
 
       <div className="field details-field">
@@ -341,7 +244,6 @@ function ItemViewer({ item, onClose, onSave, onDelete }) {
   const shakeTimerRef = useRef(null);
   const [sampling, setSampling] = useState(null);
   const [sampleStatus, setSampleStatus] = useState("");
-  const [palette, setPalette] = useState(item.palette || []);
   const [draft, setDraft] = useState(() => itemDraft(item));
   const [shaking, setShaking] = useState(false);
   const [closeBlocked, setCloseBlocked] = useState(false);
@@ -411,7 +313,6 @@ function ItemViewer({ item, onClose, onSave, onDelete }) {
   useEffect(() => {
     setSampling(null);
     setSampleStatus("");
-    setPalette(item.palette || []);
     setDraft(itemDraft(item));
   }, [item]);
 
@@ -442,8 +343,6 @@ function ItemViewer({ item, onClose, onSave, onDelete }) {
 
   const handleImageLoad = (event) => {
     samplingCanvasRef.current = buildSamplingCanvas(event.currentTarget);
-    const extracted = extractPalette(event.currentTarget);
-    setPalette([...new Set([...(item.palette || []), ...extracted])].slice(0, 5));
   };
 
   const handleImageClick = (event) => {
@@ -455,7 +354,6 @@ function ItemViewer({ item, onClose, onSave, onDelete }) {
     }
     const targetField = sampling === "secondary" ? "secondaryColor" : "color";
     setDraft((current) => ({ ...current, [targetField]: color }));
-    setPalette((current) => [color, ...current.filter((existing) => existing.toLowerCase() !== color.toLowerCase())].slice(0, 5));
     setSampleStatus(`Sampled ${color} as the ${sampling} color.`);
     setSampling(null);
   };
@@ -494,7 +392,6 @@ function ItemViewer({ item, onClose, onSave, onDelete }) {
         <ItemEditor
           draft={draft}
           setDraft={setDraft}
-          palette={palette}
           sampling={sampling}
           setSampling={setSampling}
           sampleStatus={sampleStatus}

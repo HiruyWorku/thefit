@@ -31,7 +31,7 @@ Fill in the keys for the features you want to use, then restart the server. For 
 
 ## Add clothes
 
-Choose, drop, or paste photos in the app. Use one item per photo. Preview it and choose **Remove background** or **Keep original**. Removal sends the photo to Photoroom only when clicked. Review the transparent result and choose **Use this image**, or **Restore original**. Then enter a name, select a category, specific garment type, and primary color, and optionally add a secondary color and comma-separated details. Select **Save item** to add it to your collection. When adding multiple photos, complete each item's form in turn.
+Choose, drop, or paste photos in the app. Use one item per photo. Preview it and choose **Remove background** or **Keep original**. Removal sends the photo to Photoroom only when clicked. Review the transparent result and choose **Use this image**, or **Restore original**. Then enter a name, select a category, specific garment type, and color, and optionally add comma-separated details. Select **Save item** to add it to your collection. When adding multiple photos, complete each item's form in turn.
 
 Browse by **Tops**, **Outerwear**, **Bottoms**, **Footwear**, **Headwear**, or **Accessories**, then narrow a category by garment type (for example, puffer jackets, jeans, or loafers). The piece count reflects the selected filters, with the wardrobe total alongside it. Existing items infer their garment type from names/details until you explicitly save one; a saved garment type takes priority. Caps are headwear, while bags, belts, scarves, and gloves stay in Accessories and are not used as hats in recommendations.
 
