@@ -2,7 +2,7 @@
 
 # Wardrobe
 
-Your clothes, photographed and organized by you.
+A local-first wardrobe gallery with photo uploads, weather-based outfit suggestions, and optional AI try-on previews.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-191919?style=flat-square)](LICENSE)
 [![Node 22+](https://img.shields.io/badge/node-22%2B-191919?style=flat-square)](package.json)
@@ -15,6 +15,8 @@ Your clothes, photographed and organized by you.
 
 ## Quick start
 
+Use Node.js 22 or newer and npm.
+
 ```bash
 git clone https://github.com/tandpfun/wardrobe.git
 cd wardrobe
@@ -23,6 +25,14 @@ npm run dev
 ```
 
 Open [localhost:5173](http://localhost:5173). No API key or reference photo is required.
+
+To enable optional background removal or outfit try-on, copy the configuration template if you do not already have a `.env.local` file:
+
+```bash
+cp .env.example .env.local
+```
+
+Fill in the keys for the features you want to use, then restart the server. For try-on, also add your reference photo at `data/model-reference.png` or set `WARDROBE_MODEL_REFERENCE` to its local path.
 
 ## Add clothes
 
@@ -46,11 +56,36 @@ The button sends your reference photo and the suggested garment images to OpenAI
 
 ## Configuration
 
-To enable background removal, set `PHOTOROOM_API_KEY` in `.env` or `.env.local` and restart the dev server. The key stays on the server. Standard imports work without it. Processing copies are resized to at most 6,000 pixels per side and 25 megapixels; the original remains available until you save. Previewing or removing a background does not save a wardrobe entry.
+Set these values in `.env.local` and restart the server after changes. API keys stay on the server; keep them out of source control.
 
-`WARDROBE_DATA_DIR` optionally changes the storage directory (default: `data`). Run the Vite dev or preview server for the local storage API; a static-only host cannot save uploads.
+| Variable | Purpose | Default |
+| --- | --- | --- |
+| `PHOTOROOM_API_KEY` | Enables the optional **Remove background** action. | Unset |
+| `OPENAI_API_KEY` | Enables daily outfit try-on. | Unset |
+| `OPENAI_IMAGE_MODEL` | Image model used for try-on. | `gpt-image-2` |
+| `OPENAI_IMAGE_QUALITY` | Image quality requested for try-on. | `high` |
+| `WARDROBE_MODEL_REFERENCE` | Path to your try-on reference photo, relative to the project root or absolute. | `data/model-reference.png` |
+| `WARDROBE_DATA_DIR` | Directory for wardrobe records and imported images. | `data` |
+
+The template also includes `OPENAI_VISION_MODEL` for separately invoked AI workflows. The app's manual imports and daily outfit suggestions do not use a vision model.
+
+Standard imports work without API keys. For background removal, processing copies are resized to at most 6,000 pixels per side and 25 megapixels; the original remains available until you save. Previewing or removing a background does not save a wardrobe entry.
+
+Run the Vite dev or preview server for the local storage API; a static-only host cannot save uploads. Back up your data directory to preserve saved items and photos.
 
 The bundled AI skills remain available for separately requested workflows, but the app does not invoke them or resume old generation jobs.
+
+## Development
+
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start the development server at `http://localhost:5173`. |
+| `npm run build` | Build the frontend into `dist/`. |
+| `npm run preview` | Serve the built app locally at `http://localhost:4173`. |
+| `npm run check` | Run the production build check. |
+| `node --test scripts/*.test.mjs` | Run the outfit selection, import API, and try-on API tests. |
+
+Run `npm run build` before `npm run preview`.
 
 ## License
 
