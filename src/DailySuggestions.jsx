@@ -8,6 +8,25 @@ export function DailySuggestions({ items, onOpen }) {
   const [busy, setBusy] = useState(false);
   const [variation, setVariation] = useState(0);
   const [tryOn, setTryOn] = useState({ key: '', status: 'idle' });
+  const [liveTryOn, setLiveTryOn] = useState(false);
+  const [LiveTryOn, setLiveTryOnComponent] = useState(null);
+  const [liveLoading, setLiveLoading] = useState(false);
+  const [liveError, setLiveError] = useState('');
+  const liveImportLock = useRef(false);
+  const openLiveTryOn = async () => {
+    if (liveImportLock.current) return;
+    setLiveError('');
+    if (LiveTryOn) { setLiveTryOn(true); return; }
+    liveImportLock.current = true;
+    setLiveLoading(true);
+    try {
+      const module = await import('./LiveTryOn.jsx');
+      setLiveTryOnComponent(() => module.LiveTryOn);
+      setLiveTryOn(true);
+    } catch {
+      setLiveError('The live camera could not load. Refresh the page and try again.');
+    } finally { liveImportLock.current = false; setLiveLoading(false); }
+  };
   const tryOnLock = useRef(false);
   const [unit, setUnit] = useState('F');
   const request = useRef(0);
@@ -96,6 +115,8 @@ export function DailySuggestions({ items, onOpen }) {
         <ol className="daily-outfit" aria-label="Suggested outfit from head to toe">{outfit.chosen.map(({ slot, item }, index) => <li key={item.id}><button onClick={() => onOpen(item.id)} aria-label={`Edit suggested ${item.name}`}><span className="daily-number">{String(index + 1).padStart(2, '0')}</span><OptimizedImage src={item.image} alt={item.name} sizes="110px" breakpoints={[160, 240, 320]} /><span className="daily-item-label"><span className="daily-slot">{slot}</span><span className="daily-item-name">{item.name}</span></span><span className="daily-item-arrow" aria-hidden="true">↗</span></button></li>)}</ol>
         {!!outfit.missing.length && <p className="daily-note">Missing: {outfit.missing.join(', ').toLowerCase()}. Showing the pieces you have.</p>}
         <div className="daily-try-on">
+          <button className="daily-live-try-on" onClick={openLiveTryOn} disabled={liveLoading}>{liveLoading ? 'Loading camera…' : 'See this outfit live ↗'}</button>
+          {liveError && <p className="daily-note daily-error" role="alert">{liveError}</p>}
           <button className="daily-location" disabled={tryOn.status === 'loading'} aria-expanded={activeTryOn?.status === 'ready' ? activeTryOn.expanded : undefined} aria-controls={activeTryOn?.status === 'ready' ? 'daily-outfit-preview' : undefined} onClick={() => activeTryOn?.status === 'ready' ? setTryOn(current => ({ ...current, expanded: !current.expanded })) : generateTryOn()}>{tryOn.status === 'loading' ? 'Creating your preview…' : activeTryOn?.status === 'ready' ? activeTryOn.expanded ? 'Hide preview' : 'Show preview' : 'Try this look on me'}</button>
           <p className="daily-note">Uses your reference photo and these pieces to create an AI preview. Images are sent to OpenAI. Actual fit may differ.</p>
           {tryOn.status === 'loading' && <p className="daily-note" role="status">Generating your look. This can take a few minutes.</p>}
@@ -105,5 +126,6 @@ export function DailySuggestions({ items, onOpen }) {
         <details className="daily-match-help"><summary>How these pieces were picked</summary><p className="daily-note">We match the weather with your item names and details. Words like “T-shirt,” “shorts,” and “waterproof” help. Click any piece to edit it.</p></details>
       </> : <div className="daily-empty"><div className="daily-empty-mark" aria-hidden="true">＋</div><h4>{weather ? 'Your next look starts here.' : 'Let the forecast dress you.'}</h4><p>{weather ? 'Add a few pieces to your wardrobe and we’ll put them together.' : 'Share your location to see a head-to-toe outfit using pieces you already own.'}</p><span>HAT · TOP · BOTTOMS · SHOES</span></div>}
     </div>
+    {liveTryOn && LiveTryOn && <LiveTryOn outfit={outfit} onClose={() => setLiveTryOn(false)} />}
   </section>;
 }

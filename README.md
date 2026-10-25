@@ -49,6 +49,10 @@ After getting a daily suggestion, click **Try this look on me**. Set `OPENAI_API
 
 The button sends your reference photo and the suggested garment images to OpenAI's image-edit API. Generation can take a few minutes and uses your OpenAI API credits. The result appears below the outfit and can be downloaded. It is an AI visualization, not a measurement of actual fit. Changing the suggested pieces hides the previous preview. The server temporarily caches up to five results until restart, and does not modify your collection photos.
 
+## Live camera try-on
+
+With `DECART_API_KEY` set in `.env.local`, select **See this outfit live** in a weather-based suggestion. The app first opens a free local camera preview. Select **Start live try-on** to send the camera and outfit to Decart using a short-lived client token and standard-speed 720p Lucy VTON. The live session stops when you close the panel, select **Stop try-on**, or after 90 seconds. Missing or stalled video stops the session early to conserve credits; a connected session is only labeled live after the browser decodes a frame. Decart charges realtime usage by generated-video second. Drag or click **Full outfit** or a suggested piece to apply that selection. This feature does not call OpenAI or Photoroom.
+
 ## Configuration
 
 Set these values in `.env.local` and restart the server after changes. API keys stay on the server; keep them out of source control.
@@ -56,6 +60,7 @@ Set these values in `.env.local` and restart the server after changes. API keys 
 | Variable | Purpose | Default |
 | --- | --- | --- |
 | `PHOTOROOM_API_KEY` | Enables the optional **Remove background** action. | Unset |
+| `DECART_API_KEY` | Enables live camera outfit try-on. | Unset |
 | `OPENAI_API_KEY` | Enables daily outfit try-on. | Unset |
 | `OPENAI_IMAGE_MODEL` | Image model used for try-on. | `gpt-image-2` |
 | `OPENAI_IMAGE_QUALITY` | Image quality requested for try-on. | `high` |
@@ -76,6 +81,6 @@ The bundled AI skills remain available for separately requested workflows, but t
 | `npm run build` | Build the frontend into `dist/`. |
 | `npm run preview` | Serve the built app locally at `http://localhost:4173`. |
 | `npm run check` | Run the production build check. |
-| `node --test scripts/*.test.mjs` | Run the outfit selection, import API, and try-on API tests. |
+| `npm test` | Run the outfit, import, try-on, and video-worker regression tests. |
 
 Run `npm run build` before `npm run preview`.

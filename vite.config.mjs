@@ -3,12 +3,17 @@ import { wardrobeTryOnApi } from "./scripts/try-on-api.mjs";
 import react from "@vitejs/plugin-react";
 import { wardrobeImportApi } from "./scripts/import-job-api.mjs";
 import { responsiveImageApi } from "./scripts/responsive-image-api.mjs";
+import { decartApi } from "./scripts/decart-api.mjs";
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   return {
     optimizeDeps: {
-      include: ["react", "react-dom/client"],
+      // p-retry contains a CommonJS dependency (retry) that still needs interop.
+      include: ["react", "react-dom/client", "@decartai/sdk > p-retry"],
+      // This ESM SDK resolves its frame-metadata worker relative to import.meta.url.
+      // Prebundling relocates the module without copying the worker, breaking video.
+      exclude: ["@decartai/sdk"],
     },
     server: {
       host: "0.0.0.0",
@@ -22,6 +27,6 @@ export default defineConfig(({ mode }) => {
       port: 4173,
       allowedHosts: ["localhost"],
     },
-    plugins: [react(), responsiveImageApi(), wardrobeImportApi({ env }), wardrobeTryOnApi({ env })],
+    plugins: [react(), responsiveImageApi(), wardrobeImportApi({ env }), wardrobeTryOnApi({ env }), decartApi({ env })],
   };
 });
