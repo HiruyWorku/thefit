@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Check, Plus, SpinnerGap, Trash, UploadSimple, X } from "@phosphor-icons/react";
 import "./import-flow.css";
+import { CategoryFields } from "./CategoryFields.jsx";
+import { validGarmentType } from "./garment-types.mjs";
 
-const PARTS = [["upperbody", "Tops"], ["wholebody_up", "Jackets"], ["lowerbody", "Bottoms"], ["accessories_up", "Accessories"], ["shoes", "Shoes"]];
 const HEX_COLOR = /^#[0-9a-f]{6}$/i;
 const fileToDataUrl = (file) => new Promise((resolve, reject) => {
   const reader = new FileReader();
@@ -34,7 +35,7 @@ export function WardrobeImportFlow({ onGarmentApproved }) {
       }
       try {
         const imageDataUrl = await fileToDataUrl(file);
-        setItems(current => [...current, { id: crypto.randomUUID(), imageDataUrl, originalImageDataUrl: imageDataUrl, processedImageDataUrl: null, step: "photo", removing: false, removalError: "", name: "", part: "", color: "", secondaryColor: "", tags: "" }]);
+        setItems(current => [...current, { id: crypto.randomUUID(), imageDataUrl, originalImageDataUrl: imageDataUrl, processedImageDataUrl: null, step: "photo", removing: false, removalError: "", name: "", part: "", garmentType: "", color: "", tags: "" }]);
         setOpen(true);
       } catch (err) { setError(err.message); }
     }
@@ -71,7 +72,7 @@ export function WardrobeImportFlow({ onGarmentApproved }) {
     } catch (err) { patchItem(id, { removalError: err.message }); }
     finally { removalRequests.current.delete(id); patchItem(id, { removing: false }); }
   };
-  const valid = item && item.name.trim() && item.part && HEX_COLOR.test(item.color) && (!item.secondaryColor || HEX_COLOR.test(item.secondaryColor));
+  const valid = item && item.name.trim() && item.part && item.garmentType && validGarmentType(item.part, item.garmentType) && HEX_COLOR.test(item.color);
   const save = async event => {
     event.preventDefault();
     if (!valid || item.step !== "details" || item.removing || saving.current) return;
@@ -79,7 +80,7 @@ export function WardrobeImportFlow({ onGarmentApproved }) {
     try {
       const response = await fetch("/api/import/wardrobe", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageDataUrl: item.imageDataUrl, metadata: { name: item.name.trim(), part: item.part, color: item.color, secondaryColor: item.secondaryColor || null, tags: item.tags.split(",").map(tag => tag.trim()).filter(Boolean) } }),
+        body: JSON.stringify({ imageDataUrl: item.imageDataUrl, metadata: { name: item.name.trim(), part: item.part, garmentType: item.garmentType, color: item.color, secondaryColor: null, tags: item.tags.split(",").map(tag => tag.trim()).filter(Boolean) } }),
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Could not save this item.");
@@ -92,9 +93,8 @@ export function WardrobeImportFlow({ onGarmentApproved }) {
   return <>
     <input ref={inputRef} type="file" accept="image/png,image/jpeg,image/webp" multiple hidden onChange={event => { submitFiles(event.target.files); event.target.value = ""; }} />
     <div className="import-drop-overlay" data-active={dragging} aria-hidden={!dragging}><div className="import-drop-target is-over"><UploadSimple size={34} /><h2>Drop item photos</h2><p>Use one item per photo, then fill in its details.</p></div></div>
-    <aside className={`import-tray${items.length ? " is-expanded" : ""}`} aria-label="Add clothes">
-      <button className="import-tray__button" onClick={() => setOpen(true)} aria-label="Add clothes"><Plus size={19} /></button>
-      <div className="import-tray__actions"><span className="import-tray__label">{items.length ? `${items.length} to add` : "Add clothes"}</span><button className="import-icon-button" onClick={() => inputRef.current?.click()} aria-label="Choose photos"><UploadSimple size={17} /></button></div>
+    <aside className="import-tray" aria-label="Add clothes">
+      <button className="import-tray__button" type="button" onClick={() => setOpen(true)} aria-label="Add clothes" aria-haspopup="dialog" aria-expanded={open}><Plus size={19} /></button>
     </aside>
     {open && <div className="import-popover-backdrop" data-open="true" onMouseDown={event => event.target === event.currentTarget && setOpen(false)} onKeyDown={event => event.key === "Escape" && setOpen(false)}>
       <section className="import-popover" role="dialog" aria-modal="true" aria-labelledby="import-title">
@@ -116,15 +116,13 @@ export function WardrobeImportFlow({ onGarmentApproved }) {
             <img className="import-editor__preview" src={item.imageDataUrl} alt="Your uploaded item" />
             <fieldset className="import-fields" disabled={busy} style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}>
               <div className="import-field"><label htmlFor="item-name">Name</label><input id="item-name" autoFocus required maxLength={120} value={item.name} onChange={event => update("name", event.target.value)} placeholder="e.g. Navy jacket" /></div>
-              <div className="import-field"><label htmlFor="item-category">Category</label><select id="item-category" required value={item.part} onChange={event => update("part", event.target.value)}><option value="" disabled>Choose a category</option>{PARTS.map(([id, label]) => <option key={id} value={id}>{label}</option>)}</select></div>
-              <div className="import-field"><label htmlFor="item-color">Primary color</label><div className="import-color-row"><input aria-label="Choose primary color" type="color" value={HEX_COLOR.test(item.color) ? item.color : "#000000"} onChange={event => update("color", event.target.value)} /><input id="item-color" required pattern="#[0-9a-fA-F]{6}" placeholder="#hex" value={item.color} onChange={event => update("color", event.target.value)} /></div></div>
-              <div className="import-field"><label htmlFor="item-secondary">Secondary color (optional)</label><input id="item-secondary" pattern="#[0-9a-fA-F]{6}" placeholder="#hex" value={item.secondaryColor} onChange={event => update("secondaryColor", event.target.value)} /></div>
+              <CategoryFields part={item.part} garmentType={item.garmentType} prefix="item" className="import-field" onChange={patch => patchItem(item.id, patch)} />
+              <div className="import-field"><label htmlFor="item-color">Color</label><div className="import-color-row"><input aria-label="Choose color" type="color" value={HEX_COLOR.test(item.color) ? item.color : "#000000"} onChange={event => update("color", event.target.value)} /><input id="item-color" required pattern="#[0-9a-fA-F]{6}" placeholder="#hex" value={item.color} onChange={event => update("color", event.target.value)} /></div></div>
               <div className="import-field"><label htmlFor="item-details">Details (optional)</label><input id="item-details" value={item.tags} onChange={event => update("tags", event.target.value)} placeholder="casual, cotton, striped" /><small>Separate details with commas.</small></div>
             </fieldset>
           </div>
           <div className="import-actions"><button className="import-button" type="button" disabled={busy} onClick={() => patchItem(item.id, { step: "photo" })}>Back to photo</button><button className="import-button" type="button" disabled={busy} onClick={() => { setItems(current => current.filter(entry => entry.id !== item.id)); setError(""); }}><Trash size={14} /> Remove photo</button><button className="import-button import-button--primary" disabled={!valid || busy}>{busy ? <SpinnerGap className="import-spinner" size={14} /> : <Check size={14} />} {busy ? "Saving…" : "Save item"}</button></div>
         </form> : <div className="import-drop-target"><UploadSimple size={28} /><h2>Choose or paste an item photo</h2><p>Choose one photo per item. Next, enter its name, category, color, and details before saving.</p><button className="import-button import-button--primary" onClick={() => inputRef.current?.click()}>Choose photos</button></div>}
-        {item && <div className="import-actions"><button className="import-button" onClick={() => inputRef.current?.click()}><Plus size={14} /> Add more photos</button></div>}
         {error && <p className="import-status is-error" role="alert">{error}</p>}
       </section>
     </div>}

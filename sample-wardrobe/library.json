@@ -1,0 +1,901 @@
+[
+  {
+    "id": "import-09032fb7-2e17-4f88-9ed9-2c2e8b1cf394",
+    "name": "Black leather sneakers",
+    "part": "shoes",
+    "color": "#22262c",
+    "secondaryColor": null,
+    "palette": [
+      "#22262c"
+    ],
+    "tags": [
+      "sneakers",
+      "low top",
+      "leather",
+      "casual"
+    ],
+    "image": "/api/import/library/import-09032fb7-2e17-4f88-9ed9-2c2e8b1cf394-garment.png",
+    "thumbnail": "/api/import/library/import-09032fb7-2e17-4f88-9ed9-2c2e8b1cf394-garment.png",
+    "modeledImage": null,
+    "importJobId": "09032fb7-2e17-4f88-9ed9-2c2e8b1cf394",
+    "garmentType": "sneakers"
+  },
+  {
+    "id": "import-10d5e3e2-b007-4df6-83a7-b8f822715bbd",
+    "name": "Black tailored trousers",
+    "part": "lowerbody",
+    "color": "#262626",
+    "secondaryColor": null,
+    "palette": [
+      "#262626"
+    ],
+    "tags": [
+      "trousers",
+      "pants",
+      "tailored",
+      "formal"
+    ],
+    "image": "/api/import/library/import-10d5e3e2-b007-4df6-83a7-b8f822715bbd-garment.png",
+    "thumbnail": "/api/import/library/import-10d5e3e2-b007-4df6-83a7-b8f822715bbd-garment.png",
+    "modeledImage": null,
+    "importJobId": "10d5e3e2-b007-4df6-83a7-b8f822715bbd",
+    "garmentType": "trousers"
+  },
+  {
+    "id": "import-3e4e2e2b-079e-4ef8-ba66-12f3eb71f6cd",
+    "name": "Yellow hooded rain jacket",
+    "part": "wholebody_up",
+    "color": "#eacb30",
+    "secondaryColor": null,
+    "palette": [
+      "#eacb30"
+    ],
+    "tags": [
+      "rain jacket",
+      "hooded",
+      "shell",
+      "zip front"
+    ],
+    "image": "/api/import/library/import-3e4e2e2b-079e-4ef8-ba66-12f3eb71f6cd-garment.png",
+    "thumbnail": "/api/import/library/import-3e4e2e2b-079e-4ef8-ba66-12f3eb71f6cd-garment.png",
+    "modeledImage": null,
+    "importJobId": "3e4e2e2b-079e-4ef8-ba66-12f3eb71f6cd",
+    "garmentType": "rain-jacket"
+  },
+  {
+    "id": "import-0768bacd-b7d1-455a-b01b-bdb23eced24a",
+    "name": "Grey drawstring shorts",
+    "part": "lowerbody",
+    "color": "#888888",
+    "secondaryColor": "#eeeeeb",
+    "palette": [
+      "#888888",
+      "#eeeeeb"
+    ],
+    "tags": [
+      "shorts",
+      "drawstring",
+      "heathered",
+      "casual"
+    ],
+    "image": "/api/import/library/import-0768bacd-b7d1-455a-b01b-bdb23eced24a-garment.png",
+    "thumbnail": "/api/import/library/import-0768bacd-b7d1-455a-b01b-bdb23eced24a-garment.png",
+    "modeledImage": null,
+    "importJobId": "0768bacd-b7d1-455a-b01b-bdb23eced24a",
+    "garmentType": "shorts"
+  },
+  {
+    "id": "import-3bf42ae3-4927-4258-9ad9-196783164cd2",
+    "name": "Navy hooded shell jacket",
+    "part": "wholebody_up",
+    "color": "#202c42",
+    "secondaryColor": null,
+    "palette": [
+      "#202c42"
+    ],
+    "tags": [
+      "shell",
+      "hooded",
+      "rain jacket",
+      "zip front"
+    ],
+    "image": "/api/import/library/import-3bf42ae3-4927-4258-9ad9-196783164cd2-garment.png",
+    "thumbnail": "/api/import/library/import-3bf42ae3-4927-4258-9ad9-196783164cd2-garment.png",
+    "modeledImage": null,
+    "importJobId": "3bf42ae3-4927-4258-9ad9-196783164cd2",
+    "garmentType": "rain-jacket"
+  },
+  {
+    "id": "import-80350bcd-be32-4871-9123-a179a7ecd062",
+    "name": "Black athletic shorts",
+    "part": "lowerbody",
+    "color": "#15151a",
+    "secondaryColor": null,
+    "palette": [
+      "#15151a"
+    ],
+    "tags": [
+      "shorts",
+      "athletic",
+      "drawstring",
+      "lightweight"
+    ],
+    "image": "/api/import/library/import-80350bcd-be32-4871-9123-a179a7ecd062-garment.png",
+    "thumbnail": "/api/import/library/import-80350bcd-be32-4871-9123-a179a7ecd062-garment.png",
+    "modeledImage": null,
+    "importJobId": "80350bcd-be32-4871-9123-a179a7ecd062",
+    "garmentType": "shorts"
+  },
+  {
+    "id": "import-0de6286f-8458-442b-a049-e94af742b65c",
+    "name": "Black puffer jacket",
+    "part": "wholebody_up",
+    "color": "#262626",
+    "secondaryColor": null,
+    "palette": [
+      "#262626"
+    ],
+    "tags": [
+      "puffer",
+      "winter",
+      "quilted",
+      "zip front"
+    ],
+    "image": "/api/import/library/import-0de6286f-8458-442b-a049-e94af742b65c-garment.png",
+    "thumbnail": "/api/import/library/import-0de6286f-8458-442b-a049-e94af742b65c-garment.png",
+    "modeledImage": null,
+    "importJobId": "0de6286f-8458-442b-a049-e94af742b65c",
+    "garmentType": "puffer-jacket"
+  },
+  {
+    "id": "import-ca3bee61-cd98-4caf-825b-030f7c3b6ab8",
+    "name": "Navy knit running shoes",
+    "part": "shoes",
+    "color": "#1f2a37",
+    "secondaryColor": "#9bbfe0",
+    "palette": [
+      "#1f2a37",
+      "#9bbfe0"
+    ],
+    "tags": [
+      "trainers",
+      "sneakers",
+      "knit",
+      "running"
+    ],
+    "image": "/api/import/library/import-ca3bee61-cd98-4caf-825b-030f7c3b6ab8-garment.png",
+    "thumbnail": "/api/import/library/import-ca3bee61-cd98-4caf-825b-030f7c3b6ab8-garment.png",
+    "modeledImage": null,
+    "importJobId": "ca3bee61-cd98-4caf-825b-030f7c3b6ab8",
+    "garmentType": "running-shoes"
+  },
+  {
+    "id": "import-919346bf-fc0b-41f8-a704-062f35f01494",
+    "name": "Pewter puffer jacket",
+    "part": "wholebody_up",
+    "color": "#62676d",
+    "secondaryColor": null,
+    "palette": [
+      "#62676d"
+    ],
+    "tags": [
+      "puffer",
+      "quilted",
+      "winter",
+      "zip front"
+    ],
+    "image": "/api/import/library/import-919346bf-fc0b-41f8-a704-062f35f01494-garment.png",
+    "thumbnail": "/api/import/library/import-919346bf-fc0b-41f8-a704-062f35f01494-garment.png",
+    "modeledImage": null,
+    "importJobId": "919346bf-fc0b-41f8-a704-062f35f01494",
+    "garmentType": "puffer-jacket"
+  },
+  {
+    "id": "import-82ee10e1-ab85-4295-83ff-09b2d28c8fc1",
+    "name": "Black leather biker jacket",
+    "part": "wholebody_up",
+    "color": "#202020",
+    "secondaryColor": null,
+    "palette": [
+      "#202020"
+    ],
+    "tags": [
+      "leather",
+      "biker jacket",
+      "zip front",
+      "casual"
+    ],
+    "image": "/api/import/library/import-82ee10e1-ab85-4295-83ff-09b2d28c8fc1-garment.png",
+    "thumbnail": "/api/import/library/import-82ee10e1-ab85-4295-83ff-09b2d28c8fc1-garment.png",
+    "modeledImage": null,
+    "importJobId": "82ee10e1-ab85-4295-83ff-09b2d28c8fc1",
+    "garmentType": "leather-jacket"
+  },
+  {
+    "id": "import-0fde7906-8bdf-460f-9f4d-660a7e62bfcf",
+    "name": "Navy graphic T-shirt",
+    "part": "upperbody",
+    "color": "#26313f",
+    "secondaryColor": "#f0f0eb",
+    "palette": [
+      "#26313f",
+      "#f0f0eb"
+    ],
+    "tags": [
+      "t-shirt",
+      "short sleeve",
+      "crew neck",
+      "graphic"
+    ],
+    "image": "/api/import/library/import-0fde7906-8bdf-460f-9f4d-660a7e62bfcf-garment.png",
+    "thumbnail": "/api/import/library/import-0fde7906-8bdf-460f-9f4d-660a7e62bfcf-garment.png",
+    "modeledImage": null,
+    "importJobId": "0fde7906-8bdf-460f-9f4d-660a7e62bfcf",
+    "garmentType": "t-shirt"
+  },
+  {
+    "id": "import-6143d44d-1be9-4785-b2a4-309d011acea8",
+    "name": "Black and white athletic sneakers",
+    "part": "shoes",
+    "color": "#1e1e1e",
+    "secondaryColor": "#e4e4e4",
+    "palette": [
+      "#1e1e1e",
+      "#e4e4e4"
+    ],
+    "tags": [
+      "sneakers",
+      "athletic",
+      "lace up",
+      "mesh"
+    ],
+    "image": "/api/import/library/import-6143d44d-1be9-4785-b2a4-309d011acea8-garment.png",
+    "thumbnail": "/api/import/library/import-6143d44d-1be9-4785-b2a4-309d011acea8-garment.png",
+    "modeledImage": null,
+    "importJobId": "6143d44d-1be9-4785-b2a4-309d011acea8",
+    "garmentType": "running-shoes"
+  },
+  {
+    "id": "import-49a7a727-a2f0-4b6e-b7f3-79b45f0360c3",
+    "name": "Teal athletic shorts",
+    "part": "lowerbody",
+    "color": "#28617b",
+    "secondaryColor": null,
+    "palette": [
+      "#28617b"
+    ],
+    "tags": [
+      "shorts",
+      "athletic",
+      "drawstring",
+      "lightweight"
+    ],
+    "image": "/api/import/library/import-49a7a727-a2f0-4b6e-b7f3-79b45f0360c3-garment.png",
+    "thumbnail": "/api/import/library/import-49a7a727-a2f0-4b6e-b7f3-79b45f0360c3-garment.png",
+    "modeledImage": null,
+    "importJobId": "49a7a727-a2f0-4b6e-b7f3-79b45f0360c3",
+    "garmentType": "shorts"
+  },
+  {
+    "id": "import-5b6f9773-bb9d-4c0e-a37d-a72cb2f20acd",
+    "name": "Blue geometric knit sweater",
+    "part": "upperbody",
+    "color": "#748d98",
+    "secondaryColor": "#252a2b",
+    "palette": [
+      "#748d98",
+      "#252a2b"
+    ],
+    "tags": [
+      "sweater",
+      "knit",
+      "pattern",
+      "long sleeve",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-5b6f9773-bb9d-4c0e-a37d-a72cb2f20acd-garment.png",
+    "thumbnail": "/api/import/library/import-5b6f9773-bb9d-4c0e-a37d-a72cb2f20acd-garment.png",
+    "modeledImage": null,
+    "importJobId": "5b6f9773-bb9d-4c0e-a37d-a72cb2f20acd",
+    "garmentType": "sweater"
+  },
+  {
+    "id": "import-5a37a3df-de21-42d5-a6b2-aceb5625ab08",
+    "name": "Olive panelled long-sleeve top",
+    "part": "upperbody",
+    "color": "#5d5b4d",
+    "secondaryColor": "#373a2f",
+    "palette": [
+      "#5d5b4d",
+      "#373a2f"
+    ],
+    "tags": [
+      "long sleeve",
+      "panelled",
+      "crew neck",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-5a37a3df-de21-42d5-a6b2-aceb5625ab08-garment.png",
+    "thumbnail": "/api/import/library/import-5a37a3df-de21-42d5-a6b2-aceb5625ab08-garment.png",
+    "modeledImage": null,
+    "importJobId": "5a37a3df-de21-42d5-a6b2-aceb5625ab08",
+    "garmentType": "long-sleeve-top"
+  },
+  {
+    "id": "import-6b91700c-31a5-4acf-b65f-6378cb36627f",
+    "name": "Brown textured crew-neck sweater",
+    "part": "upperbody",
+    "color": "#4c3c30",
+    "secondaryColor": null,
+    "palette": [
+      "#4c3c30"
+    ],
+    "tags": [
+      "sweater",
+      "knit",
+      "crew neck",
+      "long sleeve",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-6b91700c-31a5-4acf-b65f-6378cb36627f-garment.png",
+    "thumbnail": "/api/import/library/import-6b91700c-31a5-4acf-b65f-6378cb36627f-garment.png",
+    "modeledImage": null,
+    "importJobId": "6b91700c-31a5-4acf-b65f-6378cb36627f",
+    "garmentType": "sweater"
+  },
+  {
+    "id": "import-53f5b18d-9e9f-47b6-b2e4-5e02e7dda45e",
+    "name": "Red crew-neck sweatshirt",
+    "part": "upperbody",
+    "color": "#a81b29",
+    "secondaryColor": null,
+    "palette": [
+      "#a81b29"
+    ],
+    "tags": [
+      "sweatshirt",
+      "crew neck",
+      "long sleeve",
+      "casual",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-53f5b18d-9e9f-47b6-b2e4-5e02e7dda45e-garment.png",
+    "thumbnail": "/api/import/library/import-53f5b18d-9e9f-47b6-b2e4-5e02e7dda45e-garment.png",
+    "modeledImage": null,
+    "importJobId": "53f5b18d-9e9f-47b6-b2e4-5e02e7dda45e",
+    "garmentType": "sweatshirt"
+  },
+  {
+    "id": "import-34f0d30d-63a7-4e32-bf1e-61356b0dbc01",
+    "name": "Mustard pullover hoodie",
+    "part": "upperbody",
+    "color": "#bd8b1b",
+    "secondaryColor": null,
+    "palette": [
+      "#bd8b1b"
+    ],
+    "tags": [
+      "hoodie",
+      "pullover",
+      "drawstring",
+      "kangaroo pocket",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-34f0d30d-63a7-4e32-bf1e-61356b0dbc01-garment.png",
+    "thumbnail": "/api/import/library/import-34f0d30d-63a7-4e32-bf1e-61356b0dbc01-garment.png",
+    "modeledImage": null,
+    "importJobId": "34f0d30d-63a7-4e32-bf1e-61356b0dbc01",
+    "garmentType": "hoodie"
+  },
+  {
+    "id": "import-773befca-76a7-4482-be5c-4afe1c3226d4",
+    "name": "Grey V-neck knit sweater",
+    "part": "upperbody",
+    "color": "#777778",
+    "secondaryColor": null,
+    "palette": [
+      "#777778"
+    ],
+    "tags": [
+      "sweater",
+      "knit",
+      "v neck",
+      "long sleeve",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-773befca-76a7-4482-be5c-4afe1c3226d4-garment.png",
+    "thumbnail": "/api/import/library/import-773befca-76a7-4482-be5c-4afe1c3226d4-garment.png",
+    "modeledImage": null,
+    "importJobId": "773befca-76a7-4482-be5c-4afe1c3226d4",
+    "garmentType": "sweater"
+  },
+  {
+    "id": "import-8ec7a955-46bd-42be-aff8-5c73c8b1e253",
+    "name": "Burgundy crew-neck sweater",
+    "part": "upperbody",
+    "color": "#542630",
+    "secondaryColor": null,
+    "palette": [
+      "#542630"
+    ],
+    "tags": [
+      "sweater",
+      "knit",
+      "crew neck",
+      "long sleeve",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-8ec7a955-46bd-42be-aff8-5c73c8b1e253-garment.png",
+    "thumbnail": "/api/import/library/import-8ec7a955-46bd-42be-aff8-5c73c8b1e253-garment.png",
+    "modeledImage": null,
+    "importJobId": "8ec7a955-46bd-42be-aff8-5c73c8b1e253",
+    "garmentType": "sweater"
+  },
+  {
+    "id": "import-c05fde66-d99a-4242-b17d-a487778bcccb",
+    "name": "Rust red knit sweater",
+    "part": "upperbody",
+    "color": "#a13729",
+    "secondaryColor": null,
+    "palette": [
+      "#a13729"
+    ],
+    "tags": [
+      "sweater",
+      "knit",
+      "crew neck",
+      "long sleeve",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-c05fde66-d99a-4242-b17d-a487778bcccb-garment.png",
+    "thumbnail": "/api/import/library/import-c05fde66-d99a-4242-b17d-a487778bcccb-garment.png",
+    "modeledImage": null,
+    "importJobId": "c05fde66-d99a-4242-b17d-a487778bcccb",
+    "garmentType": "sweater"
+  },
+  {
+    "id": "import-22a9ab14-700b-4dd4-9852-8a5c195317cf",
+    "name": "Black button-up shirt",
+    "part": "upperbody",
+    "color": "#292929",
+    "secondaryColor": null,
+    "palette": [
+      "#292929"
+    ],
+    "tags": [
+      "button up",
+      "dress shirt",
+      "long sleeve",
+      "smart",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-22a9ab14-700b-4dd4-9852-8a5c195317cf-garment.png",
+    "thumbnail": "/api/import/library/import-22a9ab14-700b-4dd4-9852-8a5c195317cf-garment.png",
+    "modeledImage": null,
+    "importJobId": "22a9ab14-700b-4dd4-9852-8a5c195317cf",
+    "garmentType": "shirt"
+  },
+  {
+    "id": "import-834e15ed-7206-464a-b59c-afaa473a6e77",
+    "name": "Red plaid button-up shirt",
+    "part": "upperbody",
+    "color": "#713336",
+    "secondaryColor": "#334244",
+    "palette": [
+      "#713336",
+      "#334244"
+    ],
+    "tags": [
+      "button up",
+      "shirt",
+      "plaid",
+      "long sleeve",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-834e15ed-7206-464a-b59c-afaa473a6e77-garment.png",
+    "thumbnail": "/api/import/library/import-834e15ed-7206-464a-b59c-afaa473a6e77-garment.png",
+    "modeledImage": null,
+    "importJobId": "834e15ed-7206-464a-b59c-afaa473a6e77",
+    "garmentType": "shirt"
+  },
+  {
+    "id": "import-45b68142-edba-42ef-bbaa-e61a3d6c7458",
+    "name": "Pink striped button-down shirt",
+    "part": "upperbody",
+    "color": "#e0babb",
+    "secondaryColor": "#f3eddf",
+    "palette": [
+      "#e0babb",
+      "#f3eddf"
+    ],
+    "tags": [
+      "button down",
+      "dress shirt",
+      "striped",
+      "long sleeve",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-45b68142-edba-42ef-bbaa-e61a3d6c7458-garment.png",
+    "thumbnail": "/api/import/library/import-45b68142-edba-42ef-bbaa-e61a3d6c7458-garment.png",
+    "modeledImage": null,
+    "importJobId": "45b68142-edba-42ef-bbaa-e61a3d6c7458",
+    "garmentType": "shirt"
+  },
+  {
+    "id": "import-9aa0ce57-f562-4da6-90cd-e384a77fc88e",
+    "name": "Light-wash straight-leg jeans",
+    "part": "lowerbody",
+    "color": "#86a6bc",
+    "secondaryColor": null,
+    "palette": [
+      "#86a6bc"
+    ],
+    "tags": [
+      "jeans",
+      "denim",
+      "light wash",
+      "straight leg",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-9aa0ce57-f562-4da6-90cd-e384a77fc88e-garment.png",
+    "thumbnail": "/api/import/library/import-9aa0ce57-f562-4da6-90cd-e384a77fc88e-garment.png",
+    "modeledImage": null,
+    "importJobId": "9aa0ce57-f562-4da6-90cd-e384a77fc88e",
+    "garmentType": "jeans"
+  },
+  {
+    "id": "import-3f1846c7-219a-48a9-9f82-3fd7397114a8",
+    "name": "Distressed blue slim jeans",
+    "part": "lowerbody",
+    "color": "#526b7c",
+    "secondaryColor": null,
+    "palette": [
+      "#526b7c"
+    ],
+    "tags": [
+      "jeans",
+      "denim",
+      "distressed",
+      "slim",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-3f1846c7-219a-48a9-9f82-3fd7397114a8-garment.png",
+    "thumbnail": "/api/import/library/import-3f1846c7-219a-48a9-9f82-3fd7397114a8-garment.png",
+    "modeledImage": null,
+    "importJobId": "3f1846c7-219a-48a9-9f82-3fd7397114a8",
+    "garmentType": "jeans"
+  },
+  {
+    "id": "import-62e670be-fe1f-4971-b045-cc8cb40afa99",
+    "name": "Dark indigo straight-leg jeans",
+    "part": "lowerbody",
+    "color": "#223249",
+    "secondaryColor": null,
+    "palette": [
+      "#223249"
+    ],
+    "tags": [
+      "jeans",
+      "denim",
+      "dark wash",
+      "straight leg",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-62e670be-fe1f-4971-b045-cc8cb40afa99-garment.png",
+    "thumbnail": "/api/import/library/import-62e670be-fe1f-4971-b045-cc8cb40afa99-garment.png",
+    "modeledImage": null,
+    "importJobId": "62e670be-fe1f-4971-b045-cc8cb40afa99",
+    "garmentType": "jeans"
+  },
+  {
+    "id": "import-e860edf1-fb7f-4c04-8fb0-380f4895798e",
+    "name": "Blue bootcut jeans",
+    "part": "lowerbody",
+    "color": "#7390a1",
+    "secondaryColor": null,
+    "palette": [
+      "#7390a1"
+    ],
+    "tags": [
+      "jeans",
+      "denim",
+      "bootcut",
+      "casual",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-e860edf1-fb7f-4c04-8fb0-380f4895798e-garment.png",
+    "thumbnail": "/api/import/library/import-e860edf1-fb7f-4c04-8fb0-380f4895798e-garment.png",
+    "modeledImage": null,
+    "importJobId": "e860edf1-fb7f-4c04-8fb0-380f4895798e",
+    "garmentType": "jeans"
+  },
+  {
+    "id": "import-c4207e31-cc7e-49bf-8f4b-c5656c6d3875",
+    "name": "Faded blue tapered jeans",
+    "part": "lowerbody",
+    "color": "#7695ab",
+    "secondaryColor": null,
+    "palette": [
+      "#7695ab"
+    ],
+    "tags": [
+      "jeans",
+      "denim",
+      "faded",
+      "tapered",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-c4207e31-cc7e-49bf-8f4b-c5656c6d3875-garment.png",
+    "thumbnail": "/api/import/library/import-c4207e31-cc7e-49bf-8f4b-c5656c6d3875-garment.png",
+    "modeledImage": null,
+    "importJobId": "c4207e31-cc7e-49bf-8f4b-c5656c6d3875",
+    "garmentType": "jeans"
+  },
+  {
+    "id": "import-60fb2365-02ff-4181-a66a-33a88c3ab9b4",
+    "name": "Red and black hooded jacket",
+    "part": "wholebody_up",
+    "color": "#bc1c2f",
+    "secondaryColor": "#23262a",
+    "palette": [
+      "#bc1c2f",
+      "#23262a"
+    ],
+    "tags": [
+      "jacket",
+      "hooded",
+      "zip front",
+      "color block",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-60fb2365-02ff-4181-a66a-33a88c3ab9b4-garment.png",
+    "thumbnail": "/api/import/library/import-60fb2365-02ff-4181-a66a-33a88c3ab9b4-garment.png",
+    "modeledImage": null,
+    "importJobId": "60fb2365-02ff-4181-a66a-33a88c3ab9b4",
+    "garmentType": "other-jacket"
+  },
+  {
+    "id": "import-bc7bd5e5-6348-49fd-a6e2-cc0ffeb6b5be",
+    "name": "Orange quilted puffer jacket",
+    "part": "wholebody_up",
+    "color": "#e56d20",
+    "secondaryColor": null,
+    "palette": [
+      "#e56d20"
+    ],
+    "tags": [
+      "jacket",
+      "puffer",
+      "quilted",
+      "zip front",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-bc7bd5e5-6348-49fd-a6e2-cc0ffeb6b5be-garment.png",
+    "thumbnail": "/api/import/library/import-bc7bd5e5-6348-49fd-a6e2-cc0ffeb6b5be-garment.png",
+    "modeledImage": null,
+    "importJobId": "bc7bd5e5-6348-49fd-a6e2-cc0ffeb6b5be",
+    "garmentType": "puffer-jacket"
+  },
+  {
+    "id": "import-5c92940a-b0b7-4f71-bedb-c73e480a3114",
+    "name": "Olive hooded utility jacket",
+    "part": "wholebody_up",
+    "color": "#6a6b4d",
+    "secondaryColor": null,
+    "palette": [
+      "#6a6b4d"
+    ],
+    "tags": [
+      "jacket",
+      "hooded",
+      "utility",
+      "zip front",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-5c92940a-b0b7-4f71-bedb-c73e480a3114-garment.png",
+    "thumbnail": "/api/import/library/import-5c92940a-b0b7-4f71-bedb-c73e480a3114-garment.png",
+    "modeledImage": null,
+    "importJobId": "5c92940a-b0b7-4f71-bedb-c73e480a3114",
+    "garmentType": "other-jacket"
+  },
+  {
+    "id": "import-2cd29b4a-b0ea-4a6d-99c2-9805d9f09a23",
+    "name": "Olive fleece jacket",
+    "part": "wholebody_up",
+    "color": "#766e4d",
+    "secondaryColor": null,
+    "palette": [
+      "#766e4d"
+    ],
+    "tags": [
+      "jacket",
+      "fleece",
+      "zip front",
+      "stand collar",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-2cd29b4a-b0ea-4a6d-99c2-9805d9f09a23-garment.png",
+    "thumbnail": "/api/import/library/import-2cd29b4a-b0ea-4a6d-99c2-9805d9f09a23-garment.png",
+    "modeledImage": null,
+    "importJobId": "2cd29b4a-b0ea-4a6d-99c2-9805d9f09a23",
+    "garmentType": "fleece-jacket"
+  },
+  {
+    "id": "import-111a5cb2-7834-4cfe-8129-2d0fe4205de6",
+    "name": "Wheat lace-up work boots",
+    "part": "shoes",
+    "color": "#c48a31",
+    "secondaryColor": "#49352b",
+    "palette": [
+      "#c48a31",
+      "#49352b"
+    ],
+    "tags": [
+      "boots",
+      "lace up",
+      "workwear",
+      "lug sole",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-111a5cb2-7834-4cfe-8129-2d0fe4205de6-garment.png",
+    "thumbnail": "/api/import/library/import-111a5cb2-7834-4cfe-8129-2d0fe4205de6-garment.png",
+    "modeledImage": null,
+    "importJobId": "111a5cb2-7834-4cfe-8129-2d0fe4205de6",
+    "garmentType": "boots"
+  },
+  {
+    "id": "import-aacfb3c3-3a3f-4672-b7f5-14632168fb5a",
+    "name": "Green rubber rain boots",
+    "part": "shoes",
+    "color": "#34483c",
+    "secondaryColor": null,
+    "palette": [
+      "#34483c"
+    ],
+    "tags": [
+      "boots",
+      "rubber",
+      "rain boots",
+      "tall",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-aacfb3c3-3a3f-4672-b7f5-14632168fb5a-garment.png",
+    "thumbnail": "/api/import/library/import-aacfb3c3-3a3f-4672-b7f5-14632168fb5a-garment.png",
+    "modeledImage": null,
+    "importJobId": "aacfb3c3-3a3f-4672-b7f5-14632168fb5a",
+    "garmentType": "rain-boots"
+  },
+  {
+    "id": "import-f6608241-f8ce-48c6-8594-888f1483f06a",
+    "name": "Black lace-up combat boots",
+    "part": "shoes",
+    "color": "#202020",
+    "secondaryColor": null,
+    "palette": [
+      "#202020"
+    ],
+    "tags": [
+      "boots",
+      "leather",
+      "lace up",
+      "combat",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-f6608241-f8ce-48c6-8594-888f1483f06a-garment.png",
+    "thumbnail": "/api/import/library/import-f6608241-f8ce-48c6-8594-888f1483f06a-garment.png",
+    "modeledImage": null,
+    "importJobId": "f6608241-f8ce-48c6-8594-888f1483f06a",
+    "garmentType": "boots"
+  },
+  {
+    "id": "import-608b9635-d7d9-4fa6-8759-ab09effb57d7",
+    "name": "Brown leather derby shoes",
+    "part": "shoes",
+    "color": "#65473b",
+    "secondaryColor": null,
+    "palette": [
+      "#65473b"
+    ],
+    "tags": [
+      "dress shoes",
+      "leather",
+      "lace up",
+      "derby",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-608b9635-d7d9-4fa6-8759-ab09effb57d7-garment.png",
+    "thumbnail": "/api/import/library/import-608b9635-d7d9-4fa6-8759-ab09effb57d7-garment.png",
+    "modeledImage": null,
+    "importJobId": "608b9635-d7d9-4fa6-8759-ab09effb57d7",
+    "garmentType": "dress-shoes"
+  },
+  {
+    "id": "import-9680e8af-3e1f-43b8-8270-813851dffb87",
+    "name": "Black leather loafers",
+    "part": "shoes",
+    "color": "#1e1e20",
+    "secondaryColor": null,
+    "palette": [
+      "#1e1e20"
+    ],
+    "tags": [
+      "loafers",
+      "leather",
+      "slip on",
+      "smart",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-9680e8af-3e1f-43b8-8270-813851dffb87-garment.png",
+    "thumbnail": "/api/import/library/import-9680e8af-3e1f-43b8-8270-813851dffb87-garment.png",
+    "modeledImage": null,
+    "importJobId": "9680e8af-3e1f-43b8-8270-813851dffb87",
+    "garmentType": "loafers"
+  },
+  {
+    "id": "import-a90945df-14e1-4f52-8ab0-95ec520d1161",
+    "name": "White baseball cap",
+    "part": "headwear",
+    "color": "#e6e6e6",
+    "secondaryColor": null,
+    "palette": [
+      "#e6e6e6"
+    ],
+    "tags": [
+      "cap",
+      "baseball",
+      "sun",
+      "casual",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-a90945df-14e1-4f52-8ab0-95ec520d1161-garment.png",
+    "thumbnail": "/api/import/library/import-a90945df-14e1-4f52-8ab0-95ec520d1161-garment.png",
+    "modeledImage": null,
+    "importJobId": "a90945df-14e1-4f52-8ab0-95ec520d1161",
+    "garmentType": "cap"
+  },
+  {
+    "id": "import-a3328274-115b-4230-9d64-04852b21b192",
+    "name": "Navy baseball cap",
+    "part": "headwear",
+    "color": "#33344d",
+    "secondaryColor": null,
+    "palette": [
+      "#33344d"
+    ],
+    "tags": [
+      "cap",
+      "baseball",
+      "sun",
+      "casual",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-a3328274-115b-4230-9d64-04852b21b192-garment.png",
+    "thumbnail": "/api/import/library/import-a3328274-115b-4230-9d64-04852b21b192-garment.png",
+    "modeledImage": null,
+    "importJobId": "a3328274-115b-4230-9d64-04852b21b192",
+    "garmentType": "cap"
+  },
+  {
+    "id": "import-886f8553-7883-4d49-bb8c-a8a7e704ed60",
+    "name": "Grey and black trucker cap",
+    "part": "headwear",
+    "color": "#6f6f6f",
+    "secondaryColor": "#292929",
+    "palette": [
+      "#6f6f6f",
+      "#292929"
+    ],
+    "tags": [
+      "cap",
+      "trucker",
+      "mesh",
+      "casual",
+      "catalog"
+    ],
+    "image": "/api/import/library/import-886f8553-7883-4d49-bb8c-a8a7e704ed60-garment.png",
+    "thumbnail": "/api/import/library/import-886f8553-7883-4d49-bb8c-a8a7e704ed60-garment.png",
+    "modeledImage": null,
+    "importJobId": "886f8553-7883-4d49-bb8c-a8a7e704ed60",
+    "garmentType": "cap"
+  }
+]
