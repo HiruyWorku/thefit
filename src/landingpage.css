@@ -1,0 +1,13 @@
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+@config "../tailwind.config.js";
+
+/* The landing page uses Tailwind; its reset must not restyle wardrobe controls. */
+@layer theme {
+  .landing-page { line-height: 1.5; }
+  .landing-page :where(h1,h2,h3,p,ul,ol,figure) { margin: 0; }
+  .landing-page :where(h1,h2,h3) { font-size: inherit; font-weight: inherit; }
+  .landing-page :where(ul,ol) { list-style: none; padding: 0; }
+  .landing-page :where(a) { color: inherit; text-decoration: inherit; }
+  .landing-page :where(img) { display: block; max-width: 100%; height: auto; }
+}

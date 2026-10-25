@@ -3,6 +3,7 @@ import { Check, Plus, SpinnerGap, Trash, UploadSimple, X } from "@phosphor-icons
 import "./import-flow.css";
 import { CategoryFields } from "./CategoryFields.jsx";
 import { validGarmentType } from "./garment-types.mjs";
+import { uploadPrivatePhoto } from './private-upload.mjs';
 
 const HEX_COLOR = /^#[0-9a-f]{6}$/i;
 const fileToDataUrl = (file) => new Promise((resolve, reject) => {
@@ -62,13 +63,15 @@ export function WardrobeImportFlow({ onGarmentApproved }) {
     removalRequests.current.add(id);
     patchItem(id, { removing: true, removalError: "" });
     try {
+      const upload = await uploadPrivatePhoto(item.originalImageDataUrl);
       const response = await fetch("/api/import/remove-background", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageDataUrl: item.originalImageDataUrl }),
+        body: JSON.stringify(upload),
       });
       const result = await response.json().catch(() => ({}));
-      if (!response.ok || !result.imageDataUrl) throw new Error(result.error || "Could not remove the background. Retry or keep the original.");
-      patchItem(id, { imageDataUrl: result.imageDataUrl, processedImageDataUrl: result.imageDataUrl });
+      const image = result.imageUrl || result.imageDataUrl;
+      if (!response.ok || !image) throw new Error(result.error || "Could not remove the background. Retry or keep the original.");
+      patchItem(id, { imageDataUrl: image, processedImageDataUrl: image });
     } catch (err) { patchItem(id, { removalError: err.message }); }
     finally { removalRequests.current.delete(id); patchItem(id, { removing: false }); }
   };
@@ -78,9 +81,10 @@ export function WardrobeImportFlow({ onGarmentApproved }) {
     if (!valid || item.step !== "details" || item.removing || saving.current) return;
     saving.current = true; setBusy(true); setError("");
     try {
+      const upload = await uploadPrivatePhoto(item.imageDataUrl);
       const response = await fetch("/api/import/wardrobe", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageDataUrl: item.imageDataUrl, metadata: { name: item.name.trim(), part: item.part, garmentType: item.garmentType, color: item.color, secondaryColor: null, tags: item.tags.split(",").map(tag => tag.trim()).filter(Boolean) } }),
+        body: JSON.stringify({ ...upload, metadata: { name: item.name.trim(), part: item.part, garmentType: item.garmentType, color: item.color, secondaryColor: null, tags: item.tags.split(",").map(tag => tag.trim()).filter(Boolean) } }),
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Could not save this item.");

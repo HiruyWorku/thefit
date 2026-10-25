@@ -1,10 +1,12 @@
 import { createClient } from '@supabase/supabase-js'
+import { supabaseConfiguration } from './supabase-config.mjs'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Supabase URL or Anon Key is missing from your .env file.')
+const settings = supabaseConfiguration(import.meta.env)
+let client = null
+let error = settings.error
+if (!error) {
+  try { client = createClient(settings.url, settings.key, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } }) }
+  catch { error = 'Account sign-in could not start. Check the Supabase configuration.' }
 }
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = client
+export const supabaseConfigurationError = error

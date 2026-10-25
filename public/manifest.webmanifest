@@ -1,7 +1,7 @@
 {
-  "name": "Open Wardrobe",
-  "short_name": "Wardrobe",
-  "description": "A local-first AI wardrobe gallery.",
+  "name": "thefit",
+  "short_name": "thefit",
+  "description": "Your private wardrobe, outfit builder, and weather-based daily looks.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

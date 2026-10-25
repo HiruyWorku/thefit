@@ -10,7 +10,7 @@ export default {
         // Editorial serif for dramatic headers
         serif: ['"Playfair Display"', 'serif'],
         // Clean sans-serif for UI and body text
-        sans: ['Inter', 'system-ui', 'sans-serif'], 
+        sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       colors: {
         editorial: {
