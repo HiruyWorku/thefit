@@ -35,7 +35,7 @@ export function DailySuggestions({ items, onOpen }) {
   const location = useRef(null);
   const controller = useRef(null);
   const outfit = useMemo(() => weather ? suggestOutfit(items, weather, variation, { occasion }) : null, [items, weather, variation, occasion]);
-  const outfitKey = JSON.stringify(outfit?.chosen.map(({ item }) => [item.id, item.name, item.part, item.color, item.secondaryColor, item.tags, item.image]) || []);
+  const outfitKey = JSON.stringify(outfit?.chosen.map(({ item }) => [item.id, item.name, item.part, item.garmentType, item.color, item.secondaryColor, item.tags, item.image]) || []);
   const activeTryOn = tryOn.key === outfitKey ? tryOn : null;
   const generateTryOn = async () => {
     if (tryOnLock.current || !outfit?.chosen.length || activeTryOn?.status === 'ready') return;
@@ -114,8 +114,8 @@ export function DailySuggestions({ items, onOpen }) {
       <a className="daily-credit" href="https://open-meteo.com/" target="_blank" rel="noreferrer">Weather by Open-Meteo</a>
     </div>
     <div className="daily-look">
-      <div className="daily-look-heading"><h3>Today's outfit</h3><span>{weather && outfit.chosen.length ? `${outfit.chosen.length} pieces · head to toe` : 'Picked from your wardrobe'}</span></div>
-      {weather && !!items.length && <label className="daily-occasion"><span>Dress for</span><select value={occasion} onChange={event => { setOccasion(event.target.value); setVariation(0); }}>{OUTFIT_OCCASIONS.map(option => <option key={option.id} value={option.id}>{option.label}</option>)}</select></label>}
+      <div className="daily-look-heading"><h3>Today's outfit</h3><span>{weather ? outfit.chosen.length ? `${outfit.chosen.length} pieces · ${outfit.missing.length ? 'partial look' : 'head to toe'}` : 'No suitable look' : 'Picked from your wardrobe'}</span></div>
+      {weather && !!items.length && <><label className="daily-occasion"><span>Dress for</span><select aria-describedby="occasion-description" value={occasion} onChange={event => { setOccasion(event.target.value); setVariation(0); }}>{OUTFIT_OCCASIONS.map(option => <option key={option.id} value={option.id}>{option.label}</option>)}</select></label><p id="occasion-description" className="daily-occasion-description">{OUTFIT_OCCASIONS.find(option => option.id === occasion)?.description}</p></>}
       {weather && !!items.length ? <>
         <ol className="daily-outfit" aria-label="Suggested outfit from head to toe">{outfit.chosen.map(({ slot, item, reason }, index) => <li key={item.id}><button onClick={() => onOpen(item.id)} aria-label={`Edit suggested ${item.name}`}><span className="daily-number">{String(index + 1).padStart(2, '0')}</span><OptimizedImage src={item.image} alt={item.name} sizes="110px" breakpoints={[160, 240, 320]} /><span className="daily-item-label"><span className="daily-slot">{slot}</span><span className="daily-item-name">{item.name}</span><span className="daily-item-reason">{reason}</span></span><span className="daily-item-arrow" aria-hidden="true">↗</span></button></li>)}</ol>
         {!!outfit.warnings.length && <ul className="daily-outfit-notes" aria-label="Wardrobe limitations">{outfit.warnings.map(note => <li key={note}>{note}</li>)}</ul>}

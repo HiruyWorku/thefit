@@ -75,6 +75,21 @@ test('optional background removal and persistence', async t => {
     const large = await sharp({ create: { width: 7000, height: 4000, channels: 3, background: '#abcdef' } }).png().toBuffer();
     assert.equal((await call('/api/import/remove-background', { imageDataUrl: toUrl(large) })).status, 200);
   });
+  await t.test('garment types persist and mismatched categories are rejected without provider calls', async () => {
+    const metadata = { name: 'My cap', part: 'headwear', garmentType: 'cap', color: '#123456', tags: [] };
+    const count = calls;
+    const response = await call('/api/import/wardrobe', { ...input, metadata });
+    assert.equal(response.status, 201);
+    const record = JSON.parse(response.value);
+    assert.equal(record.garmentType, 'cap');
+    const { garmentType, ...legacyMetadata } = metadata;
+    const edited = await call(`/api/import/wardrobe/${record.id}`, { metadata: { ...legacyMetadata, name: 'Renamed cap' } }, 'PATCH');
+    assert.equal(JSON.parse(edited.value).garmentType, 'cap');
+    const invalid = { ...metadata, garmentType: 'puffer-jacket' };
+    assert.equal((await call('/api/import/wardrobe', { ...input, metadata: invalid })).status, 400);
+    assert.equal((await call(`/api/import/wardrobe/${record.id}`, { metadata: invalid }, 'PATCH')).status, 400);
+    assert.equal(calls, count);
+  });
   await t.test('invalid input never calls provider', async () => {
     const count = calls;
     assert.equal((await call('/api/import/remove-background', { imageDataUrl: toUrl(Buffer.from('invalid')) })).status, 400);
@@ -103,6 +118,6 @@ test('optional background removal and persistence', async t => {
     assert.equal((await call('/api/import/remove-background', input)).status, 502);
     globalThis.fetch = async () => new Response(Buffer.alloc(18 * 1024 * 1024 + 1));
     assert.equal((await call('/api/import/remove-background', input)).status, 413);
-    assert.equal(JSON.parse((await call('/api/import/wardrobe', null, 'GET')).value).length, 2);
+    assert.equal(JSON.parse((await call('/api/import/wardrobe', null, 'GET')).value).length, 3);
   });
 });

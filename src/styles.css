@@ -120,6 +120,10 @@ button { font: inherit; }
   outline-offset: 2px;
 }
 
+.wardrobe-type-filter { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 18px; margin-top: 20px; color: var(--ink); font-size: 12px; }
+.wardrobe-type-filter select { min-height: 44px; max-width: 100%; padding: 8px 30px 8px 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); color: var(--ink); font: inherit; }
+.wardrobe-type-filter select:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
 .gallery-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
@@ -536,6 +540,7 @@ button { font: inherit; }
   grid-template-columns: 1fr 1fr;
   gap: 20px 14px;
 }
+.item-editor > .field:first-child { grid-column: 1 / -1; }
 
 .field,
 .color-field {
@@ -940,6 +945,7 @@ button { font: inherit; }
 .daily-occasion { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: 14px 0 4px; color: var(--muted); font-size: 12px; }
 .daily-occasion select { min-height: 40px; max-width: 65%; padding: 7px 30px 7px 10px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: transparent; font: inherit; cursor: pointer; }
 .daily-occasion select:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.daily-occasion-description { margin: 8px 0 16px; color: var(--muted); font-size: 12px; line-height: 1.6; }
 .daily-outfit { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
 .daily-outfit li { border-bottom: 1px solid #e7e1d7; }
 .daily-outfit button { width: 100%; display: grid; grid-template-columns: 20px 100px minmax(0, 1fr) 16px; align-items: center; gap: 14px; padding: 9px 0; background: transparent; border: 0; text-align: left; color: var(--ink); cursor: pointer; border-radius: 8px; }

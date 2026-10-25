@@ -191,6 +191,55 @@ test('one valid look does not pretend there are alternatives', () => {
  assert.equal(look.hasAlternatives,false);
 });
 
+test('smart casual never fills gaps with hoodies, athletic shorts, or running shoes', () => {
+ const wardrobe=[item('hoodie','upperbody','Hoodie'),item('shorts','lowerbody','Athletic shorts'),item('runners','shoes','Running shoes')];
+ for(let variation=0;variation<12;variation++) {
+  const look=suggestOutfit(wardrobe,mild,variation,{occasion:'smart'});
+  assert.equal(look.chosen.length,0);
+  assert.deepEqual(look.missing,['Top','Bottoms','Shoes']);
+  assert.ok(look.warnings.some(note=>note.includes('smart casual')));
+ }
+});
+
+test('smart casual alternatives keep shirts or plain knitwear with refined bottoms and shoes', () => {
+ const wardrobe=[item('shirt','upperbody','Button-up shirt'),item('knit','upperbody','Grey sweater'),
+  item('hoodie','upperbody','Hoodie'),item('sweatshirt','upperbody','Sweatshirt'),
+  item('chinos','lowerbody','Chinos'),item('darkjeans','lowerbody','Dark indigo jeans'),item('ripped','lowerbody','Distressed jeans'),
+  item('loafers','shoes','Leather loafers'),item('clean','shoes','Minimal leather sneakers'),item('work','shoes','Work boots'),item('runners','shoes','Running shoes')];
+ for(let variation=0;variation<12;variation++) {
+  const look=suggestOutfit(wardrobe,mild,variation,{occasion:'smart'});
+  assert.equal(look.chosen.length,3);
+  assert.ok(['shirt','knit'].includes(selected(look,'Top').id));
+  assert.ok(['chinos','darkjeans'].includes(selected(look,'Bottoms').id));
+  assert.ok(['loafers','clean'].includes(selected(look,'Shoes').id));
+ }
+});
+
+test('active plans report gaps instead of dressing workout looks in tailored clothes or work boots', () => {
+ const wardrobe=[item('shirt','upperbody','Button-up shirt'),item('pants','lowerbody','Tailored trousers'),item('boots','shoes','Work boots')];
+ const look=suggestOutfit(wardrobe,mild,0,{occasion:'active'});
+ assert.equal(look.chosen.length,0);
+ assert.ok(look.warnings.some(note=>note.includes('active plans')));
+});
+
+test('all smart casual and active alternatives in the sample wardrobe meet their occasion rules', async () => {
+ const wardrobe=JSON.parse(await readFile(new URL('../sample-wardrobe/library.json',import.meta.url),'utf8'));
+ for(const occasion of ['smart','active']) for(const feelsLike of [8,20,29]) for(let variation=0;variation<12;variation++) {
+  const look=suggestOutfit(wardrobe,{...weather,feelsLike},variation,{occasion});
+  assert.ok(look.chosen.every(({item})=>profileGarment(item)[occasion==='smart'?'smartSuitable':'activeSuitable']));
+ }
+});
+
+test('dry warm everyday alternatives do not pair shorts with rain or work boots', async () => {
+ const wardrobe=JSON.parse(await readFile(new URL('../sample-wardrobe/library.json',import.meta.url),'utf8'));
+ for(let variation=0;variation<12;variation++) {
+  const look=suggestOutfit(wardrobe,mild,variation);
+  const profiles=look.chosen.map(({item})=>profileGarment(item));
+  assert.ok(!profiles.some(profile=>profile.garmentType==='rain-boots'));
+  if(profiles.some(profile=>profile.shortBottom)) assert.ok(!profiles.some(profile=>profile.garmentType==='boots'));
+ }
+});
+
 test('bad metadata, duplicated IDs and malformed optional values do not crash selection', () => {
  const wardrobe=[null,{}, {...items[1],tags:[null,5,{}],color:'not a color'},items[1],items[3],items[5]];
  const look=suggestOutfit(wardrobe,weather,NaN);

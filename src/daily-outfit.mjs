@@ -1,9 +1,9 @@
 import { colorCompatibility, profileGarment } from './garment-profile.mjs';
 
 export const OUTFIT_OCCASIONS = [
-  { id: 'everyday', label: 'Everyday' },
-  { id: 'smart', label: 'Smart casual' },
-  { id: 'active', label: 'Active' },
+  { id: 'everyday', label: 'Everyday', description: 'Relaxed pieces with a consistent style for day-to-day plans.' },
+  { id: 'smart', label: 'Smart casual', description: 'Collared tops or simple knitwear, refined full-length bottoms, and smart shoes. Weather layers are added when needed.' },
+  { id: 'active', label: 'Active / workout', description: 'Easy-moving tops, athletic bottoms, and training shoes. Missing sportswear is called out below.' },
 ];
 
 const SLOTS = { hat: 'Hat', top: 'Top', jacket: 'Jacket', bottoms: 'Bottoms', shoes: 'Shoes' };
@@ -37,7 +37,10 @@ function conditions(weather) {
   };
 }
 
-function suitable(profile, context) {
+function suitable(profile, context, occasion) {
+  if (occasion === 'smart' && !profile.smartSuitable) return false;
+  if (occasion === 'active' && !profile.activeSuitable) return false;
+  if (profile.garmentType === 'rain-boots' && !context.wet) return false;
   if (profile.role === 'bottoms' && profile.shortBottom && context.cool < 14) return false;
   if (profile.role === 'shoes' && profile.openShoe && (context.cool < 14 || context.wet)) return false;
   if (profile.role === 'top' && profile.warmth > 2 && context.cool >= 25) return false;
@@ -59,13 +62,14 @@ function itemScore(profile, context, occasion) {
     if (context.wet) score += profile.rainProtection * 4;
     if (context.windy && profile.shell) score += 2;
     if (context.warm >= 24 && profile.warmth > 2.5) score -= 5;
+    if (occasion === 'smart') score += profile.formality * 2 + (profile.color?.neutral ? 1 : 0) - (profile.sporty ? 2 : 0);
   } else if (profile.role === 'bottoms') {
     score += context.cool >= 25 ? (profile.shortBottom ? 7 : -1)
       : context.cool >= 20 ? (profile.shortBottom ? 2 : 1) : profile.shortBottom ? -3 : 3;
   } else if (profile.role === 'shoes') {
     if (context.wet) score += profile.rainProtection * 5 - (profile.mesh ? 3 : 0);
     else if (context.cool < 8) score += profile.warmth * 2;
-    else score += 1;
+    else score += context.cool >= 20 && profile.garmentType === 'boots' ? -2 : 1;
   } else if (profile.role === 'hat') score += 2;
   if (['top', 'bottoms', 'shoes'].includes(profile.role)) {
     const target = occasion === 'smart' ? 1.6 : occasion === 'active' ? -1 : .6;
@@ -83,6 +87,8 @@ function outfitScore(profiles, context, occasion) {
     score -= Math.abs(difference) * (difference < 0 ? 8 : 5);
   }
   const styled = profiles.filter(profile => ['top', 'bottoms', 'shoes'].includes(profile.role));
+  if (!context.wet && profiles.some(profile => profile.shortBottom)
+    && profiles.some(profile => profile.role === 'shoes' && profile.garmentType === 'boots')) score -= 4;
   for (let first = 0; first < profiles.length; first++) {
     for (let second = first + 1; second < profiles.length; second++) {
       score += colorCompatibility(profiles[first].color, profiles[second].color);
@@ -124,7 +130,10 @@ function alternatives(ranked, date) {
   return selected;
 }
 
-function reasonFor(profile, profiles, context) {
+function reasonFor(profile, profiles, context, occasion) {
+  if (occasion === 'smart' && profile.role === 'top') return ['sweater', 'cardigan'].includes(profile.garmentType) ? 'Simple knitwear for a smart casual base.' : 'A collared or dressier top for smart casual.';
+  if (occasion === 'smart' && profile.role === 'bottoms') return 'Refined full-length bottoms to keep the look smart casual.';
+  if (occasion === 'smart' && profile.role === 'shoes' && !context.wet) return 'Dress shoes or minimal sneakers to finish the smart casual look.';
   if (profile.role === 'top') return context.cool >= 25 ? 'A lighter base for the heat.'
     : profile.warmth >= 2 ? 'A warm base balanced with the outer layer.'
       : context.cool < 15 ? 'A light base; the jacket supplies most of the warmth.' : 'A base layer that works with the rest of the look.';
@@ -155,7 +164,7 @@ export function suggestOutfit(items, weather, variation = 0, options = {}) {
   const roles = ROLE_ORDER.filter(role => role !== 'jacket' || context.needsJacket);
   const missing = [], pools = [];
   for (const role of roles) {
-    const candidates = profiles.filter(profile => profile.role === role && suitable(profile, context))
+    const candidates = profiles.filter(profile => profile.role === role && suitable(profile, context, occasion))
       .sort((a, b) => itemScore(b, context, occasion) - itemScore(a, context, occasion) || a.item.id.localeCompare(b.item.id))
       .slice(0, PER_SLOT_LIMIT);
     const required = role !== 'hat' && (role !== 'jacket' || context.requiresJacket);
@@ -178,7 +187,7 @@ export function suggestOutfit(items, weather, variation = 0, options = {}) {
   const top = selected.find(profile => profile.role === 'top');
   const jacket = selected.find(profile => profile.role === 'jacket');
   const shoes = selected.find(profile => profile.role === 'shoes');
-  if (missing.length) warnings.push('No suitable ' + missing.join(', ').toLowerCase() + ' available for these conditions. Showing only pieces you own.');
+  if (missing.length) warnings.push('No suitable ' + missing.join(', ').toLowerCase() + (occasion === 'smart' ? ' for smart casual in this weather.' : occasion === 'active' ? ' for active plans in this weather.' : ' available for these conditions.') + ' Showing only pieces you own.');
   if (context.cool < 10 && top && top.warmth < 1.5) warnings.push('No warm top in this look. A sweater or long-sleeve thermal would improve cold-weather coverage.');
   if (context.cool < 15 && top && top.warmth + (jacket?.warmth || 0) < context.targetWarmth - .8) warnings.push('The available layers may be too light for these cold conditions.');
   if (context.wet && jacket && jacket.rainProtection < 2) warnings.push('The jacket prioritizes warmth and is not tagged for rain protection.');
@@ -192,7 +201,7 @@ export function suggestOutfit(items, weather, variation = 0, options = {}) {
     + (context.wet ? ' Rain protection matters for this look.' : '')
     + (context.forecastUsed ? ' Matched to now and the next few hours.' : '');
   return {
-    chosen: selected.map(profile => ({ slot: SLOTS[profile.role], item: profile.item, reason: reasonFor(profile, selected, context) })),
+    chosen: selected.map(profile => ({ slot: SLOTS[profile.role], item: profile.item, reason: reasonFor(profile, selected, context, occasion) })),
     missing, warnings, corrections, summary, alternativeCount: selected.length ? looks.length : 0, hasAlternatives: selected.length > 0 && looks.length > 1,
     forecastUsed: context.forecastUsed, occasion,
   };

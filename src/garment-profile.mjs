@@ -1,15 +1,7 @@
-// Evidence comes from names/tags first; saved categories are a fallback. These
+// Explicit garment types lead; names/tags and legacy categories are fallbacks.
 // are conservative styling heuristics, not measurements of insulation or fit.
-const PART_ROLES = { upperbody: 'top', wholebody_up: 'jacket', lowerbody: 'bottoms', shoes: 'shoes', accessories_up: 'hat' };
-const WORDS = {
-  shoes: /\b(sneakers?|trainers?|shoes?|boots?|sandals?|slides?|loafers?|oxfords?|heels?)\b/,
-  hat: /\b(hats?|caps?|beanies?|berets?|fedoras?)\b/,
-  jacket: /\b(jackets?|rainjackets?|raincoats?|coats?|puffers?|parkas?|blazers?|windbreakers?|shackets?|overshirts?|outerwear|rain shell|shell jacket)\b/,
-  bottoms: /\b(shorts|trousers?|pants|jeans|chinos|leggings|skirts?|joggers?|sweatpants)\b/,
-  top: /\b(t shirts?|tshirts?|tees?|tanks?|polos?|shirts?|blouses?|sweaters?|sweatshirts?|hoodies?|cardigans?|thermals?|tops?)\b/,
-};
+import { getGarmentType, CATEGORY_MAP, GARMENT_TYPE_MAP } from './garment-types.mjs';
 const normalize = value => typeof value === 'string' ? value.toLowerCase().replace(/[-_\u2010-\u2015]/g, ' ').replace(/\s+/g, ' ').trim() : '';
-const inferRole = text => Object.keys(WORDS).find(role => WORDS[role].test(text)) || null;
 
 export function colorProfile(hex) {
   if (typeof hex !== 'string' || !/^#[\da-f]{6}$/i.test(hex)) return null;
@@ -29,12 +21,13 @@ export function profileGarment(item) {
   if (!item || typeof item.id !== 'string' || !item.id.trim()) return null;
   const name = normalize(item.name);
   const tags = Array.isArray(item.tags) ? item.tags.filter(tag => typeof tag === 'string').map(normalize) : [];
-  const text = [name, ...tags].join(' ');
+  const type = getGarmentType(item);
+  const explicit = Object.hasOwn(GARMENT_TYPE_MAP, item.garmentType) && !item.garmentType.startsWith('other-');
+  const text = [normalize(type?.label), ...(explicit ? [] : [name]), ...tags].join(' ');
   // A product named "low-top sneakers" is footwear, not a top. Names give
   // stronger type evidence than incidental tags such as "wear under jacket".
-  let role = inferRole(name) || inferRole(tags.join(' ')) || PART_ROLES[item.part];
-  if (role === 'hat' && !WORDS.hat.test(text)) role = null; // Bags aren't hats.
-  if (!role) return null;
+  const role = type?.role;
+  if (!role || role === 'accessory') return null; // Bags, belts and scarves aren't hats.
   const has = pattern => pattern.test(text);
   const puffer = has(/\b(puffer|parka|down|insulated|winter coat)\b/);
   const shell = has(/\b(rain\s?(jacket|coat)|rain shell|shell|windbreaker|waterproof|water resistant)\b/);
@@ -63,11 +56,25 @@ export function profileGarment(item) {
   const sporty = has(/\b(athletic|running|gym|training|sports?|track|joggers|sweatpants)\b/);
   if (sporty && role !== 'jacket') formality = -1;
   const rainProtection = waterproof ? 3 : resistant ? 2 : role === 'jacket' && shell ? 2 : role === 'shoes' && !openShoe && !mesh ? 1 : .1;
+  const details = [name, ...tags].join(' ');
+  const smartTop = ['shirt', 'polo', 'blouse', 'sweater', 'cardigan'].includes(type.id)
+    && !sporty && !/\b(graphic|printed|floral|pattern|distressed)\b/.test(details);
+  const smartBottoms = ['trousers', 'chinos'].includes(type.id)
+    || (type.id === 'jeans' && /\b(dark|indigo|black)\b/.test(details) && !/\b(distressed|ripped|faded|baggy)\b/.test(details))
+    || (type.id === 'skirt' && !/\b(mini|denim|athletic)\b/.test(details));
+  const smartShoes = ['loafers', 'dress-shoes'].includes(type.id)
+    || (type.id === 'sneakers' && /\b(leather|minimal|minimalist|clean)\b/.test(details) && !sporty && !mesh)
+    || (type.id === 'boots' && /\b(chelsea|dress|chukka)\b/.test(details) && !/\b(work|combat|hiking)\b/.test(details));
+  const activeTop = ['t-shirt', 'tank-top', 'long-sleeve-top', 'thermal', 'hoodie', 'sweatshirt'].includes(type.id);
+  const activeBottoms = ['joggers', 'leggings'].includes(type.id) || (type.id === 'shorts' && sporty);
+  const activeShoes = type.id === 'running-shoes' || (type.id === 'sneakers' && sporty);
   return {
-    item, role, warmth, formality, shortSleeve, shortBottom, openShoe, mesh, puffer, shell, sporty,
+    item, garmentType: type.id, role, warmth, formality, shortSleeve, shortBottom, openShoe, mesh, puffer, shell, sporty,
+    smartSuitable: role === 'top' ? smartTop : role === 'bottoms' ? smartBottoms && !sporty : role === 'shoes' ? smartShoes : true,
+    activeSuitable: role === 'top' ? activeTop : role === 'bottoms' ? activeBottoms : role === 'shoes' ? activeShoes : true,
     rainProtection, waterproof, color: colorProfile(item.color),
     patterned: has(/\b(graphic|printed|print|plaid|floral|striped|pattern)\b/),
-    categoryCorrected: !!PART_ROLES[item.part] && PART_ROLES[item.part] !== role,
+    categoryCorrected: !!CATEGORY_MAP[item.part] && type.part !== item.part,
   };
 }
 

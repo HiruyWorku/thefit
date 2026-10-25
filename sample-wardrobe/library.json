@@ -17,7 +17,8 @@
     "image": "/api/import/library/import-09032fb7-2e17-4f88-9ed9-2c2e8b1cf394-garment.png",
     "thumbnail": "/api/import/library/import-09032fb7-2e17-4f88-9ed9-2c2e8b1cf394-garment.png",
     "modeledImage": null,
-    "importJobId": "09032fb7-2e17-4f88-9ed9-2c2e8b1cf394"
+    "importJobId": "09032fb7-2e17-4f88-9ed9-2c2e8b1cf394",
+    "garmentType": "sneakers"
   },
   {
     "id": "import-10d5e3e2-b007-4df6-83a7-b8f822715bbd",
@@ -37,7 +38,8 @@
     "image": "/api/import/library/import-10d5e3e2-b007-4df6-83a7-b8f822715bbd-garment.png",
     "thumbnail": "/api/import/library/import-10d5e3e2-b007-4df6-83a7-b8f822715bbd-garment.png",
     "modeledImage": null,
-    "importJobId": "10d5e3e2-b007-4df6-83a7-b8f822715bbd"
+    "importJobId": "10d5e3e2-b007-4df6-83a7-b8f822715bbd",
+    "garmentType": "trousers"
   },
   {
     "id": "import-3e4e2e2b-079e-4ef8-ba66-12f3eb71f6cd",
@@ -57,7 +59,8 @@
     "image": "/api/import/library/import-3e4e2e2b-079e-4ef8-ba66-12f3eb71f6cd-garment.png",
     "thumbnail": "/api/import/library/import-3e4e2e2b-079e-4ef8-ba66-12f3eb71f6cd-garment.png",
     "modeledImage": null,
-    "importJobId": "3e4e2e2b-079e-4ef8-ba66-12f3eb71f6cd"
+    "importJobId": "3e4e2e2b-079e-4ef8-ba66-12f3eb71f6cd",
+    "garmentType": "rain-jacket"
   },
   {
     "id": "import-0768bacd-b7d1-455a-b01b-bdb23eced24a",
@@ -78,7 +81,8 @@
     "image": "/api/import/library/import-0768bacd-b7d1-455a-b01b-bdb23eced24a-garment.png",
     "thumbnail": "/api/import/library/import-0768bacd-b7d1-455a-b01b-bdb23eced24a-garment.png",
     "modeledImage": null,
-    "importJobId": "0768bacd-b7d1-455a-b01b-bdb23eced24a"
+    "importJobId": "0768bacd-b7d1-455a-b01b-bdb23eced24a",
+    "garmentType": "shorts"
   },
   {
     "id": "import-3bf42ae3-4927-4258-9ad9-196783164cd2",
@@ -98,7 +102,8 @@
     "image": "/api/import/library/import-3bf42ae3-4927-4258-9ad9-196783164cd2-garment.png",
     "thumbnail": "/api/import/library/import-3bf42ae3-4927-4258-9ad9-196783164cd2-garment.png",
     "modeledImage": null,
-    "importJobId": "3bf42ae3-4927-4258-9ad9-196783164cd2"
+    "importJobId": "3bf42ae3-4927-4258-9ad9-196783164cd2",
+    "garmentType": "rain-jacket"
   },
   {
     "id": "import-80350bcd-be32-4871-9123-a179a7ecd062",
@@ -118,7 +123,8 @@
     "image": "/api/import/library/import-80350bcd-be32-4871-9123-a179a7ecd062-garment.png",
     "thumbnail": "/api/import/library/import-80350bcd-be32-4871-9123-a179a7ecd062-garment.png",
     "modeledImage": null,
-    "importJobId": "80350bcd-be32-4871-9123-a179a7ecd062"
+    "importJobId": "80350bcd-be32-4871-9123-a179a7ecd062",
+    "garmentType": "shorts"
   },
   {
     "id": "import-0de6286f-8458-442b-a049-e94af742b65c",
@@ -138,7 +144,8 @@
     "image": "/api/import/library/import-0de6286f-8458-442b-a049-e94af742b65c-garment.png",
     "thumbnail": "/api/import/library/import-0de6286f-8458-442b-a049-e94af742b65c-garment.png",
     "modeledImage": null,
-    "importJobId": "0de6286f-8458-442b-a049-e94af742b65c"
+    "importJobId": "0de6286f-8458-442b-a049-e94af742b65c",
+    "garmentType": "puffer-jacket"
   },
   {
     "id": "import-ca3bee61-cd98-4caf-825b-030f7c3b6ab8",
@@ -159,7 +166,8 @@
     "image": "/api/import/library/import-ca3bee61-cd98-4caf-825b-030f7c3b6ab8-garment.png",
     "thumbnail": "/api/import/library/import-ca3bee61-cd98-4caf-825b-030f7c3b6ab8-garment.png",
     "modeledImage": null,
-    "importJobId": "ca3bee61-cd98-4caf-825b-030f7c3b6ab8"
+    "importJobId": "ca3bee61-cd98-4caf-825b-030f7c3b6ab8",
+    "garmentType": "running-shoes"
   },
   {
     "id": "import-919346bf-fc0b-41f8-a704-062f35f01494",
@@ -179,7 +187,8 @@
     "image": "/api/import/library/import-919346bf-fc0b-41f8-a704-062f35f01494-garment.png",
     "thumbnail": "/api/import/library/import-919346bf-fc0b-41f8-a704-062f35f01494-garment.png",
     "modeledImage": null,
-    "importJobId": "919346bf-fc0b-41f8-a704-062f35f01494"
+    "importJobId": "919346bf-fc0b-41f8-a704-062f35f01494",
+    "garmentType": "puffer-jacket"
   },
   {
     "id": "import-82ee10e1-ab85-4295-83ff-09b2d28c8fc1",
@@ -199,7 +208,8 @@
     "image": "/api/import/library/import-82ee10e1-ab85-4295-83ff-09b2d28c8fc1-garment.png",
     "thumbnail": "/api/import/library/import-82ee10e1-ab85-4295-83ff-09b2d28c8fc1-garment.png",
     "modeledImage": null,
-    "importJobId": "82ee10e1-ab85-4295-83ff-09b2d28c8fc1"
+    "importJobId": "82ee10e1-ab85-4295-83ff-09b2d28c8fc1",
+    "garmentType": "leather-jacket"
   },
   {
     "id": "import-0fde7906-8bdf-460f-9f4d-660a7e62bfcf",
@@ -220,7 +230,8 @@
     "image": "/api/import/library/import-0fde7906-8bdf-460f-9f4d-660a7e62bfcf-garment.png",
     "thumbnail": "/api/import/library/import-0fde7906-8bdf-460f-9f4d-660a7e62bfcf-garment.png",
     "modeledImage": null,
-    "importJobId": "0fde7906-8bdf-460f-9f4d-660a7e62bfcf"
+    "importJobId": "0fde7906-8bdf-460f-9f4d-660a7e62bfcf",
+    "garmentType": "t-shirt"
   },
   {
     "id": "import-6143d44d-1be9-4785-b2a4-309d011acea8",
@@ -241,7 +252,8 @@
     "image": "/api/import/library/import-6143d44d-1be9-4785-b2a4-309d011acea8-garment.png",
     "thumbnail": "/api/import/library/import-6143d44d-1be9-4785-b2a4-309d011acea8-garment.png",
     "modeledImage": null,
-    "importJobId": "6143d44d-1be9-4785-b2a4-309d011acea8"
+    "importJobId": "6143d44d-1be9-4785-b2a4-309d011acea8",
+    "garmentType": "running-shoes"
   },
   {
     "id": "import-49a7a727-a2f0-4b6e-b7f3-79b45f0360c3",
@@ -261,7 +273,8 @@
     "image": "/api/import/library/import-49a7a727-a2f0-4b6e-b7f3-79b45f0360c3-garment.png",
     "thumbnail": "/api/import/library/import-49a7a727-a2f0-4b6e-b7f3-79b45f0360c3-garment.png",
     "modeledImage": null,
-    "importJobId": "49a7a727-a2f0-4b6e-b7f3-79b45f0360c3"
+    "importJobId": "49a7a727-a2f0-4b6e-b7f3-79b45f0360c3",
+    "garmentType": "shorts"
   },
   {
     "id": "import-5b6f9773-bb9d-4c0e-a37d-a72cb2f20acd",
@@ -283,7 +296,8 @@
     "image": "/api/import/library/import-5b6f9773-bb9d-4c0e-a37d-a72cb2f20acd-garment.png",
     "thumbnail": "/api/import/library/import-5b6f9773-bb9d-4c0e-a37d-a72cb2f20acd-garment.png",
     "modeledImage": null,
-    "importJobId": "5b6f9773-bb9d-4c0e-a37d-a72cb2f20acd"
+    "importJobId": "5b6f9773-bb9d-4c0e-a37d-a72cb2f20acd",
+    "garmentType": "sweater"
   },
   {
     "id": "import-5a37a3df-de21-42d5-a6b2-aceb5625ab08",
@@ -304,7 +318,8 @@
     "image": "/api/import/library/import-5a37a3df-de21-42d5-a6b2-aceb5625ab08-garment.png",
     "thumbnail": "/api/import/library/import-5a37a3df-de21-42d5-a6b2-aceb5625ab08-garment.png",
     "modeledImage": null,
-    "importJobId": "5a37a3df-de21-42d5-a6b2-aceb5625ab08"
+    "importJobId": "5a37a3df-de21-42d5-a6b2-aceb5625ab08",
+    "garmentType": "long-sleeve-top"
   },
   {
     "id": "import-6b91700c-31a5-4acf-b65f-6378cb36627f",
@@ -325,7 +340,8 @@
     "image": "/api/import/library/import-6b91700c-31a5-4acf-b65f-6378cb36627f-garment.png",
     "thumbnail": "/api/import/library/import-6b91700c-31a5-4acf-b65f-6378cb36627f-garment.png",
     "modeledImage": null,
-    "importJobId": "6b91700c-31a5-4acf-b65f-6378cb36627f"
+    "importJobId": "6b91700c-31a5-4acf-b65f-6378cb36627f",
+    "garmentType": "sweater"
   },
   {
     "id": "import-53f5b18d-9e9f-47b6-b2e4-5e02e7dda45e",
@@ -346,7 +362,8 @@
     "image": "/api/import/library/import-53f5b18d-9e9f-47b6-b2e4-5e02e7dda45e-garment.png",
     "thumbnail": "/api/import/library/import-53f5b18d-9e9f-47b6-b2e4-5e02e7dda45e-garment.png",
     "modeledImage": null,
-    "importJobId": "53f5b18d-9e9f-47b6-b2e4-5e02e7dda45e"
+    "importJobId": "53f5b18d-9e9f-47b6-b2e4-5e02e7dda45e",
+    "garmentType": "sweatshirt"
   },
   {
     "id": "import-34f0d30d-63a7-4e32-bf1e-61356b0dbc01",
@@ -367,7 +384,8 @@
     "image": "/api/import/library/import-34f0d30d-63a7-4e32-bf1e-61356b0dbc01-garment.png",
     "thumbnail": "/api/import/library/import-34f0d30d-63a7-4e32-bf1e-61356b0dbc01-garment.png",
     "modeledImage": null,
-    "importJobId": "34f0d30d-63a7-4e32-bf1e-61356b0dbc01"
+    "importJobId": "34f0d30d-63a7-4e32-bf1e-61356b0dbc01",
+    "garmentType": "hoodie"
   },
   {
     "id": "import-773befca-76a7-4482-be5c-4afe1c3226d4",
@@ -388,7 +406,8 @@
     "image": "/api/import/library/import-773befca-76a7-4482-be5c-4afe1c3226d4-garment.png",
     "thumbnail": "/api/import/library/import-773befca-76a7-4482-be5c-4afe1c3226d4-garment.png",
     "modeledImage": null,
-    "importJobId": "773befca-76a7-4482-be5c-4afe1c3226d4"
+    "importJobId": "773befca-76a7-4482-be5c-4afe1c3226d4",
+    "garmentType": "sweater"
   },
   {
     "id": "import-8ec7a955-46bd-42be-aff8-5c73c8b1e253",
@@ -409,7 +428,8 @@
     "image": "/api/import/library/import-8ec7a955-46bd-42be-aff8-5c73c8b1e253-garment.png",
     "thumbnail": "/api/import/library/import-8ec7a955-46bd-42be-aff8-5c73c8b1e253-garment.png",
     "modeledImage": null,
-    "importJobId": "8ec7a955-46bd-42be-aff8-5c73c8b1e253"
+    "importJobId": "8ec7a955-46bd-42be-aff8-5c73c8b1e253",
+    "garmentType": "sweater"
   },
   {
     "id": "import-c05fde66-d99a-4242-b17d-a487778bcccb",
@@ -430,7 +450,8 @@
     "image": "/api/import/library/import-c05fde66-d99a-4242-b17d-a487778bcccb-garment.png",
     "thumbnail": "/api/import/library/import-c05fde66-d99a-4242-b17d-a487778bcccb-garment.png",
     "modeledImage": null,
-    "importJobId": "c05fde66-d99a-4242-b17d-a487778bcccb"
+    "importJobId": "c05fde66-d99a-4242-b17d-a487778bcccb",
+    "garmentType": "sweater"
   },
   {
     "id": "import-22a9ab14-700b-4dd4-9852-8a5c195317cf",
@@ -451,7 +472,8 @@
     "image": "/api/import/library/import-22a9ab14-700b-4dd4-9852-8a5c195317cf-garment.png",
     "thumbnail": "/api/import/library/import-22a9ab14-700b-4dd4-9852-8a5c195317cf-garment.png",
     "modeledImage": null,
-    "importJobId": "22a9ab14-700b-4dd4-9852-8a5c195317cf"
+    "importJobId": "22a9ab14-700b-4dd4-9852-8a5c195317cf",
+    "garmentType": "shirt"
   },
   {
     "id": "import-834e15ed-7206-464a-b59c-afaa473a6e77",
@@ -473,7 +495,8 @@
     "image": "/api/import/library/import-834e15ed-7206-464a-b59c-afaa473a6e77-garment.png",
     "thumbnail": "/api/import/library/import-834e15ed-7206-464a-b59c-afaa473a6e77-garment.png",
     "modeledImage": null,
-    "importJobId": "834e15ed-7206-464a-b59c-afaa473a6e77"
+    "importJobId": "834e15ed-7206-464a-b59c-afaa473a6e77",
+    "garmentType": "shirt"
   },
   {
     "id": "import-45b68142-edba-42ef-bbaa-e61a3d6c7458",
@@ -495,7 +518,8 @@
     "image": "/api/import/library/import-45b68142-edba-42ef-bbaa-e61a3d6c7458-garment.png",
     "thumbnail": "/api/import/library/import-45b68142-edba-42ef-bbaa-e61a3d6c7458-garment.png",
     "modeledImage": null,
-    "importJobId": "45b68142-edba-42ef-bbaa-e61a3d6c7458"
+    "importJobId": "45b68142-edba-42ef-bbaa-e61a3d6c7458",
+    "garmentType": "shirt"
   },
   {
     "id": "import-9aa0ce57-f562-4da6-90cd-e384a77fc88e",
@@ -516,7 +540,8 @@
     "image": "/api/import/library/import-9aa0ce57-f562-4da6-90cd-e384a77fc88e-garment.png",
     "thumbnail": "/api/import/library/import-9aa0ce57-f562-4da6-90cd-e384a77fc88e-garment.png",
     "modeledImage": null,
-    "importJobId": "9aa0ce57-f562-4da6-90cd-e384a77fc88e"
+    "importJobId": "9aa0ce57-f562-4da6-90cd-e384a77fc88e",
+    "garmentType": "jeans"
   },
   {
     "id": "import-3f1846c7-219a-48a9-9f82-3fd7397114a8",
@@ -537,7 +562,8 @@
     "image": "/api/import/library/import-3f1846c7-219a-48a9-9f82-3fd7397114a8-garment.png",
     "thumbnail": "/api/import/library/import-3f1846c7-219a-48a9-9f82-3fd7397114a8-garment.png",
     "modeledImage": null,
-    "importJobId": "3f1846c7-219a-48a9-9f82-3fd7397114a8"
+    "importJobId": "3f1846c7-219a-48a9-9f82-3fd7397114a8",
+    "garmentType": "jeans"
   },
   {
     "id": "import-62e670be-fe1f-4971-b045-cc8cb40afa99",
@@ -558,7 +584,8 @@
     "image": "/api/import/library/import-62e670be-fe1f-4971-b045-cc8cb40afa99-garment.png",
     "thumbnail": "/api/import/library/import-62e670be-fe1f-4971-b045-cc8cb40afa99-garment.png",
     "modeledImage": null,
-    "importJobId": "62e670be-fe1f-4971-b045-cc8cb40afa99"
+    "importJobId": "62e670be-fe1f-4971-b045-cc8cb40afa99",
+    "garmentType": "jeans"
   },
   {
     "id": "import-e860edf1-fb7f-4c04-8fb0-380f4895798e",
@@ -579,7 +606,8 @@
     "image": "/api/import/library/import-e860edf1-fb7f-4c04-8fb0-380f4895798e-garment.png",
     "thumbnail": "/api/import/library/import-e860edf1-fb7f-4c04-8fb0-380f4895798e-garment.png",
     "modeledImage": null,
-    "importJobId": "e860edf1-fb7f-4c04-8fb0-380f4895798e"
+    "importJobId": "e860edf1-fb7f-4c04-8fb0-380f4895798e",
+    "garmentType": "jeans"
   },
   {
     "id": "import-c4207e31-cc7e-49bf-8f4b-c5656c6d3875",
@@ -600,7 +628,8 @@
     "image": "/api/import/library/import-c4207e31-cc7e-49bf-8f4b-c5656c6d3875-garment.png",
     "thumbnail": "/api/import/library/import-c4207e31-cc7e-49bf-8f4b-c5656c6d3875-garment.png",
     "modeledImage": null,
-    "importJobId": "c4207e31-cc7e-49bf-8f4b-c5656c6d3875"
+    "importJobId": "c4207e31-cc7e-49bf-8f4b-c5656c6d3875",
+    "garmentType": "jeans"
   },
   {
     "id": "import-60fb2365-02ff-4181-a66a-33a88c3ab9b4",
@@ -622,7 +651,8 @@
     "image": "/api/import/library/import-60fb2365-02ff-4181-a66a-33a88c3ab9b4-garment.png",
     "thumbnail": "/api/import/library/import-60fb2365-02ff-4181-a66a-33a88c3ab9b4-garment.png",
     "modeledImage": null,
-    "importJobId": "60fb2365-02ff-4181-a66a-33a88c3ab9b4"
+    "importJobId": "60fb2365-02ff-4181-a66a-33a88c3ab9b4",
+    "garmentType": "other-jacket"
   },
   {
     "id": "import-bc7bd5e5-6348-49fd-a6e2-cc0ffeb6b5be",
@@ -643,7 +673,8 @@
     "image": "/api/import/library/import-bc7bd5e5-6348-49fd-a6e2-cc0ffeb6b5be-garment.png",
     "thumbnail": "/api/import/library/import-bc7bd5e5-6348-49fd-a6e2-cc0ffeb6b5be-garment.png",
     "modeledImage": null,
-    "importJobId": "bc7bd5e5-6348-49fd-a6e2-cc0ffeb6b5be"
+    "importJobId": "bc7bd5e5-6348-49fd-a6e2-cc0ffeb6b5be",
+    "garmentType": "puffer-jacket"
   },
   {
     "id": "import-5c92940a-b0b7-4f71-bedb-c73e480a3114",
@@ -664,7 +695,8 @@
     "image": "/api/import/library/import-5c92940a-b0b7-4f71-bedb-c73e480a3114-garment.png",
     "thumbnail": "/api/import/library/import-5c92940a-b0b7-4f71-bedb-c73e480a3114-garment.png",
     "modeledImage": null,
-    "importJobId": "5c92940a-b0b7-4f71-bedb-c73e480a3114"
+    "importJobId": "5c92940a-b0b7-4f71-bedb-c73e480a3114",
+    "garmentType": "other-jacket"
   },
   {
     "id": "import-2cd29b4a-b0ea-4a6d-99c2-9805d9f09a23",
@@ -685,7 +717,8 @@
     "image": "/api/import/library/import-2cd29b4a-b0ea-4a6d-99c2-9805d9f09a23-garment.png",
     "thumbnail": "/api/import/library/import-2cd29b4a-b0ea-4a6d-99c2-9805d9f09a23-garment.png",
     "modeledImage": null,
-    "importJobId": "2cd29b4a-b0ea-4a6d-99c2-9805d9f09a23"
+    "importJobId": "2cd29b4a-b0ea-4a6d-99c2-9805d9f09a23",
+    "garmentType": "fleece-jacket"
   },
   {
     "id": "import-111a5cb2-7834-4cfe-8129-2d0fe4205de6",
@@ -707,7 +740,8 @@
     "image": "/api/import/library/import-111a5cb2-7834-4cfe-8129-2d0fe4205de6-garment.png",
     "thumbnail": "/api/import/library/import-111a5cb2-7834-4cfe-8129-2d0fe4205de6-garment.png",
     "modeledImage": null,
-    "importJobId": "111a5cb2-7834-4cfe-8129-2d0fe4205de6"
+    "importJobId": "111a5cb2-7834-4cfe-8129-2d0fe4205de6",
+    "garmentType": "boots"
   },
   {
     "id": "import-aacfb3c3-3a3f-4672-b7f5-14632168fb5a",
@@ -728,7 +762,8 @@
     "image": "/api/import/library/import-aacfb3c3-3a3f-4672-b7f5-14632168fb5a-garment.png",
     "thumbnail": "/api/import/library/import-aacfb3c3-3a3f-4672-b7f5-14632168fb5a-garment.png",
     "modeledImage": null,
-    "importJobId": "aacfb3c3-3a3f-4672-b7f5-14632168fb5a"
+    "importJobId": "aacfb3c3-3a3f-4672-b7f5-14632168fb5a",
+    "garmentType": "rain-boots"
   },
   {
     "id": "import-f6608241-f8ce-48c6-8594-888f1483f06a",
@@ -749,7 +784,8 @@
     "image": "/api/import/library/import-f6608241-f8ce-48c6-8594-888f1483f06a-garment.png",
     "thumbnail": "/api/import/library/import-f6608241-f8ce-48c6-8594-888f1483f06a-garment.png",
     "modeledImage": null,
-    "importJobId": "f6608241-f8ce-48c6-8594-888f1483f06a"
+    "importJobId": "f6608241-f8ce-48c6-8594-888f1483f06a",
+    "garmentType": "boots"
   },
   {
     "id": "import-608b9635-d7d9-4fa6-8759-ab09effb57d7",
@@ -770,7 +806,8 @@
     "image": "/api/import/library/import-608b9635-d7d9-4fa6-8759-ab09effb57d7-garment.png",
     "thumbnail": "/api/import/library/import-608b9635-d7d9-4fa6-8759-ab09effb57d7-garment.png",
     "modeledImage": null,
-    "importJobId": "608b9635-d7d9-4fa6-8759-ab09effb57d7"
+    "importJobId": "608b9635-d7d9-4fa6-8759-ab09effb57d7",
+    "garmentType": "dress-shoes"
   },
   {
     "id": "import-9680e8af-3e1f-43b8-8270-813851dffb87",
@@ -791,12 +828,13 @@
     "image": "/api/import/library/import-9680e8af-3e1f-43b8-8270-813851dffb87-garment.png",
     "thumbnail": "/api/import/library/import-9680e8af-3e1f-43b8-8270-813851dffb87-garment.png",
     "modeledImage": null,
-    "importJobId": "9680e8af-3e1f-43b8-8270-813851dffb87"
+    "importJobId": "9680e8af-3e1f-43b8-8270-813851dffb87",
+    "garmentType": "loafers"
   },
   {
     "id": "import-a90945df-14e1-4f52-8ab0-95ec520d1161",
     "name": "White baseball cap",
-    "part": "accessories_up",
+    "part": "headwear",
     "color": "#e6e6e6",
     "secondaryColor": null,
     "palette": [
@@ -812,12 +850,13 @@
     "image": "/api/import/library/import-a90945df-14e1-4f52-8ab0-95ec520d1161-garment.png",
     "thumbnail": "/api/import/library/import-a90945df-14e1-4f52-8ab0-95ec520d1161-garment.png",
     "modeledImage": null,
-    "importJobId": "a90945df-14e1-4f52-8ab0-95ec520d1161"
+    "importJobId": "a90945df-14e1-4f52-8ab0-95ec520d1161",
+    "garmentType": "cap"
   },
   {
     "id": "import-a3328274-115b-4230-9d64-04852b21b192",
     "name": "Navy baseball cap",
-    "part": "accessories_up",
+    "part": "headwear",
     "color": "#33344d",
     "secondaryColor": null,
     "palette": [
@@ -833,12 +872,13 @@
     "image": "/api/import/library/import-a3328274-115b-4230-9d64-04852b21b192-garment.png",
     "thumbnail": "/api/import/library/import-a3328274-115b-4230-9d64-04852b21b192-garment.png",
     "modeledImage": null,
-    "importJobId": "a3328274-115b-4230-9d64-04852b21b192"
+    "importJobId": "a3328274-115b-4230-9d64-04852b21b192",
+    "garmentType": "cap"
   },
   {
     "id": "import-886f8553-7883-4d49-bb8c-a8a7e704ed60",
     "name": "Grey and black trucker cap",
-    "part": "accessories_up",
+    "part": "headwear",
     "color": "#6f6f6f",
     "secondaryColor": "#292929",
     "palette": [
@@ -855,6 +895,7 @@
     "image": "/api/import/library/import-886f8553-7883-4d49-bb8c-a8a7e704ed60-garment.png",
     "thumbnail": "/api/import/library/import-886f8553-7883-4d49-bb8c-a8a7e704ed60-garment.png",
     "modeledImage": null,
-    "importJobId": "886f8553-7883-4d49-bb8c-a8a7e704ed60"
+    "importJobId": "886f8553-7883-4d49-bb8c-a8a7e704ed60",
+    "garmentType": "cap"
   }
 ]
