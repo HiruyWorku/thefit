@@ -41,13 +41,22 @@ export default function LandingPage() {
 
       {/* Navigation */}
       <nav className="relative z-10 flex justify-between items-center p-8 lg:px-16 border-b border-[#1A365D]/10">
-        <motion.h1 
+        <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="font-serif text-2xl font-bold tracking-wide text-[#1A365D]"
+          className="flex items-center gap-3"
         >
-          Wardrobe.
-        </motion.h1>
+          {/* Logo and App Name */}
+          <img 
+            src="/logo.png" 
+            alt="thefit Logo" 
+            className="h-12 w-auto object-contain" 
+          />
+          <span className="font-sans text-3xl font-black tracking-tighter text-[#1A365D]">
+            thefit
+          </span>
+        </motion.div>
+        
         <div className="flex gap-8 items-center">
           <motion.a 
             whileHover={{ y: -2 }}
@@ -62,7 +71,7 @@ export default function LandingPage() {
             <motion.div 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="bg-[#1A365D] text-[#F9F8F6] px-7 py-3 rounded-full text-sm font-medium shadow-lg shadow-[#1A365D]/20"
+              className="bg-[#1A365D] text-[#F9F8F6] px-7 py-3 rounded-full text-sm font-medium shadow-lg shadow-[#1A365D]/20 cursor-pointer"
             >
               Open Closet
             </motion.div>
@@ -185,7 +194,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Feature 2: Curate (Oxford Blue Background) */}
+      {/* Feature 2: Curate */}
       <section className="px-8 lg:px-16 py-24 md:py-32 grid grid-cols-1 lg:grid-cols-2 gap-16 md:gap-24 items-center bg-[#1A365D] text-[#F9F8F6] rounded-[3rem] mx-4 md:mx-8 shadow-2xl">
         <div className="order-1 lg:order-1 flex flex-col justify-center lg:pl-8">
           <motion.span 
@@ -287,10 +296,21 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="px-8 lg:px-16 py-12 border-t border-[#1A365D]/10 flex flex-col md:flex-row justify-between items-center gap-6">
-        <h2 className="font-serif text-xl font-bold text-[#1A365D]">Wardrobe.</h2>
+        <div className="flex items-center gap-3">
+          <img 
+            src="/logo.png" 
+            alt="thefit Logo" 
+            className="h-10 w-auto object-contain" 
+          />
+          <span className="font-sans text-2xl font-black tracking-tighter text-[#1A365D]">
+            thefit
+          </span>
+        </div>
+        
         <p className="text-xs text-[#1C2321]/50 font-bold uppercase tracking-widest">
           MIT Licensed <span className="mx-2 font-normal text-[#1A365D]">/</span> Local First
         </p>
+        
         <div className="flex gap-4">
           <motion.a 
             whileHover={{ y: -2 }}
