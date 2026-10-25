@@ -2,6 +2,8 @@
 
 A private wardrobe app with weather-based outfit suggestions, a custom outfit builder, a saved-fit calendar, and optional live and photo try-on.
 
+[Open the live app](https://thefit-alpha.vercel.app)
+
 ## Features
 
 - **Your wardrobe:** upload PNG, JPEG or WebP photos, optionally remove backgrounds, and organize items by category, garment type, color and details.

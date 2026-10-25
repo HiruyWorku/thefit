@@ -1,5 +1,7 @@
 # Deployment and verification
 
+Production: [thefit-alpha.vercel.app](https://thefit-alpha.vercel.app). The shared API health check is `/api/health`.
+
 ## Runtime
 
 Use Node.js 24. Vite builds the frontend; `api/index.mjs` runs the shared `scripts/api-handler.mjs` middleware on Vercel. `vercel.json` routes `/api/*` to that function and `/app` to the SPA. Local dev and preview use the same authentication, wardrobe, upload-processing and try-on handlers.
