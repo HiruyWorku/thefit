@@ -34,9 +34,11 @@ export async function createApiHandler({ env = process.env, plugins, root = proc
 
 export function wardrobeApi({ env = {} } = {}) {
   let ready;
-  const attach = server => server.middlewares.use(async (req, res, next) => {
-    if (!new URL(req.url, 'http://localhost').pathname.startsWith('/api/')) return next();
-    await (await ready)(req, res);
-  });
+  const attach = server => {
+    server.middlewares.use(async (req, res, next) => {
+      if (!new URL(req.url, 'http://localhost').pathname.startsWith('/api/')) return next();
+      await (await ready)(req, res);
+    });
+  };
   return { name: 'thefit-api', configResolved(config) { ready = createApiHandler({ env, root: config.root }); }, configureServer: attach, configurePreviewServer: attach };
 }

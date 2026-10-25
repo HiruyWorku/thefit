@@ -12,6 +12,7 @@ A private wardrobe app with weather-based outfit suggestions, a custom outfit bu
 - **Outfit calendar:** save suggested or custom looks with garment snapshots and an existing photo preview. Revisit them by date or load them back into the builder.
 - **Live mirror:** preview your camera for free, then explicitly start a Decart live try-on with a 90-second limit.
 - **Photo previews:** upload your own reference photo and explicitly generate an OpenAI outfit visualization.
+- **Installable app:** add thefit to your home screen or desktop, with an offline app shell and updates you choose when to apply.
 
 Sign-in is required. Garments, photos, reference photos, previews and saved fits belong to the signed-in account in Supabase. New accounts start with an empty wardrobe.
 
@@ -33,6 +34,14 @@ npm run dev
 Open [http://127.0.0.1:5173](http://127.0.0.1:5173), create an account, confirm your email if required, and sign in. Use the same hostname consistently: `localhost` and `127.0.0.1` have separate browser sessions.
 
 The landing page is `/`; your protected wardrobe is `/app`.
+
+## Install on your phone or desktop
+
+Open the HTTPS deployment and choose **Install thefit**. Chrome and Edge offer a native installer when available. On iPhone or iPad, open the app in Safari, tap **Share → Add to Home Screen → Add**. Safari on Mac supports **File → Add to Dock**. The installed app opens directly into `/app`; sign-in is still required.
+
+After one online visit, the public interface can open offline. Private wardrobe data and photos, uploads, saved fits, weather and try-on require a connection. A banner explains when you are offline. Updates download in the background; choose **Update app** after finishing uploads or try-ons, or **Later** to continue.
+
+Service workers run only in production builds. Test locally with `npm run build` followed by `npm run preview`, then open `http://localhost:4173`. For implementation details and verification steps, see [PWA support](docs/pwa.md).
 
 ## Configuration
 
@@ -89,6 +98,7 @@ See [deployment notes](docs/deployment.md) and [account/storage setup](docs/auth
 - [Outfit builder and calendar](docs/outfit-builder.md)
 - [Private accounts and storage](docs/authentication.md)
 - [Deployment and verification](docs/deployment.md)
+- [PWA installation and offline behavior](docs/pwa.md)
 
 The bundled [sample wardrobe](sample-wardrobe/README.md) includes image credits. PNGimg assets are **CC BY-NC 4.0** and require attribution and noncommercial use. Migration preserves their attribution metadata. Local backups are not automatically shared with new accounts.
 

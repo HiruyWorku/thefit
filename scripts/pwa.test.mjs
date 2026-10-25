@@ -10,6 +10,7 @@ const source = (await readFile(new URL("./pwa-worker.js", import.meta.url), "utf
 function setup(fetcher) {
   const handlers = {};
   const stores = new Map();
+  let activations = 0;
   const key = (request) => typeof request === "string" ? new URL(request, "https://fit.test").href : request.url;
   const caches = {
     async open(name) {
@@ -27,11 +28,13 @@ function setup(fetcher) {
     async delete(name) { return stores.delete(name); },
   };
   vm.runInNewContext(source, {
-    self: { location: { origin: "https://fit.test" }, clients: { claim: async () => {} }, addEventListener: (name, fn) => { handlers[name] = fn; } },
+    self: { location: { origin: "https://fit.test" }, skipWaiting: async () => { activations++; }, clients: { claim: async () => {} }, addEventListener: (name, fn) => { handlers[name] = fn; } },
     caches, fetch: fetcher, URL, Response, Set, Promise,
   });
   return {
     caches,
+    get activations() { return activations; },
+    async message(data) { let pending; handlers.message({ data, waitUntil(value) { pending = value; } }); await pending; },
     async lifecycle(name) { let pending; handlers[name]({ waitUntil(promise) { pending = promise; } }); await pending; },
     async request(path, options = {}) {
       let response;
@@ -45,6 +48,7 @@ test("offline navigation and hashed assets use the installed shell", async () =>
   const app = setup(async () => { throw new Error("offline"); });
   await app.lifecycle("install");
   assert.equal(await (await app.request("/", { mode: "navigate" })).text(), "cached /index.html");
+  assert.equal(await (await app.request("/app", { mode: "navigate" })).text(), "cached /index.html");
   assert.equal(await (await app.request("/assets/app.js")).text(), "cached /assets/app.js");
   assert.equal(await app.request("/api/try-on"), undefined);
 });
@@ -63,15 +67,38 @@ test("private wardrobe data is never intercepted or cached", async () => {
 
 test("activation preserves unrelated caches and purges old private wardrobe snapshots", async () => {
   const app = setup(async () => Response.json([]));
-  for (const name of ["another-app", "the-fit-shell-old", "open-wardrobe-shell-v1", "the-fit-images-v1", "the-fit-data-v1"]) await app.caches.open(name);
+  for (const name of ["another-app", "the-fit-shell-old", "open-wardrobe-shell-v1", "the-fit-images-v1", "the-fit-images-v2", "the-fit-data-v1"]) await app.caches.open(name);
   await app.lifecycle("install");
   await app.lifecycle("activate");
   const keys = await app.caches.keys();
   assert.ok(keys.includes("another-app"));
   assert.ok(!keys.includes("the-fit-images-v1"));
+  assert.ok(!keys.includes("the-fit-images-v2"));
   assert.ok(!keys.includes("the-fit-data-v1"));
   assert.ok(!keys.includes("the-fit-shell-old"));
   assert.ok(!keys.includes("open-wardrobe-shell-v1"));
+});
+
+test('proxy photos, cross-origin signed images, private navigations, and unknown files stay network-only', async () => {
+  let calls = 0;
+  const app = setup(async () => { calls++; return new Response('private'); });
+  await app.lifecycle('install');
+  for (const path of ['/_ipx/w_400/api/import/library/photo.png', '/api/auth/session', '/photos/private.png', '/other-document']) {
+    assert.equal(await app.request(path, { mode: 'navigate' }), undefined);
+  }
+  assert.equal(await app.request('/external', { url: 'https://storage.example.test/private.png?token=secret' }), undefined);
+  assert.equal(calls, 0);
+  assert.deepEqual(await app.caches.keys(), ['the-fit-shell-test']);
+});
+
+test('an update waits for an explicit activation message', async () => {
+  const app = setup(async () => new Response('ok'));
+  await app.lifecycle('install');
+  assert.equal(app.activations, 0);
+  await app.message({ type: 'UNRELATED' });
+  assert.equal(app.activations, 0);
+  await app.message({ type: 'SKIP_WAITING' });
+  assert.equal(app.activations, 1);
 });
 
 test("private library images are never intercepted or cached", async () => {

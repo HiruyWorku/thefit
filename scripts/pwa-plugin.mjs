@@ -1,7 +1,6 @@
 import { createHash } from "node:crypto";
 import { readFile, writeFile, readdir } from "node:fs/promises";
 import path from "node:path";
-import sharp from "sharp";
 
 // Build the offline shell from the actual output, including hashed JS, CSS and fonts.
 export function wardrobePwa() {
@@ -10,16 +9,9 @@ export function wardrobePwa() {
     name: "wardrobe-pwa",
     apply: "build",
     configResolved(value) { config = value; },
-    async generateBundle() {
-      for (const size of [180, 192, 512]) {
-        const source = await sharp(path.join(config.publicDir, "icon.svg"))
-          .resize(size, size).flatten({ background: "#f4f0e8" }).png().toBuffer();
-        this.emitFile({ type: "asset", fileName: `icons/icon-${size}.png`, source });
-      }
-    },
     async closeBundle() {
       const output = path.resolve(config.root, config.build.outDir);
-      const files = ["index.html", "manifest.webmanifest", "icon.svg"];
+      const files = ["index.html", "manifest.webmanifest", "icon.svg", "logo.png"];
       for (const directory of ["assets", "icons"]) {
         for (const file of await readdir(path.join(output, directory), { recursive: true })) {
           if (path.extname(file)) files.push(`${directory}/${file}`);
