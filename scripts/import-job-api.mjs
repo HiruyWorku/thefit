@@ -2,9 +2,10 @@ import { randomUUID } from "node:crypto";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
+import { CATEGORIES, validGarmentType } from "../src/garment-types.mjs";
 
 const LIBRARY_ASSET_ROOT = "/api/import/library";
-const PARTS = new Set(["upperbody", "wholebody_up", "lowerbody", "accessories_up", "shoes"]);
+const PARTS = new Set(CATEGORIES.map(category => category.id));
 const HEX_COLOR = /^#[0-9a-f]{6}$/i;
 
 function json(res, status, value) {
@@ -103,8 +104,8 @@ export function wardrobeImportApi(options = {}) {
       if (url.pathname === "/api/import/wardrobe" && req.method === "POST") {
         const input = await body(req);
         const metadata = input.metadata || {};
-        if (typeof metadata.name !== "string" || !metadata.name.trim() || metadata.name.length > 120 || !PARTS.has(metadata.part) || !HEX_COLOR.test(metadata.color) || (metadata.secondaryColor && !HEX_COLOR.test(metadata.secondaryColor))) {
-          return json(res, 400, { error: "Enter a name, category, and valid colors." });
+        if (typeof metadata.name !== "string" || !metadata.name.trim() || metadata.name.length > 120 || !PARTS.has(metadata.part) || !validGarmentType(metadata.part, metadata.garmentType) || !HEX_COLOR.test(metadata.color) || (metadata.secondaryColor && !HEX_COLOR.test(metadata.secondaryColor))) {
+          return json(res, 400, { error: "Enter a name, a matching category and garment type, and valid colors." });
         }
         const match = typeof input.imageDataUrl === "string" && input.imageDataUrl.match(/^data:image\/(?:png|jpeg|webp);base64,(.+)$/s);
         if (!match) return json(res, 400, { error: "Choose a PNG, JPEG, or WebP photo." });
@@ -115,6 +116,7 @@ export function wardrobeImportApi(options = {}) {
         const filename = `${id}-garment.png`;
         const record = {
           id, name: metadata.name.trim(), part: metadata.part,
+          garmentType: metadata.garmentType || null,
           color: metadata.color.toLowerCase(), secondaryColor: metadata.secondaryColor?.toLowerCase() || null,
           palette: [metadata.color, metadata.secondaryColor].filter(Boolean),
           tags: Array.isArray(metadata.tags) ? metadata.tags.filter(tag => typeof tag === "string").map(tag => tag.trim().slice(0, 40)).filter(Boolean).slice(0, 12) : [],
@@ -131,14 +133,15 @@ export function wardrobeImportApi(options = {}) {
       const deletion = url.pathname.match(/^\/api\/import\/wardrobe\/(import-[a-f0-9-]{36})$/i);
       if (deletion && req.method === "PATCH") {
         const { metadata = {} } = await body(req);
-        if (!metadata || typeof metadata.name !== "string" || !metadata.name.trim() || metadata.name.length > 120 || !PARTS.has(metadata.part) || !HEX_COLOR.test(metadata.color) || (metadata.secondaryColor && !HEX_COLOR.test(metadata.secondaryColor)) || !Array.isArray(metadata.tags)) {
-          return json(res, 400, { error: "Enter a name, category, valid colors, and a list of details." });
+        if (!metadata || typeof metadata.name !== "string" || !metadata.name.trim() || metadata.name.length > 120 || !PARTS.has(metadata.part) || !validGarmentType(metadata.part, metadata.garmentType) || !HEX_COLOR.test(metadata.color) || (metadata.secondaryColor && !HEX_COLOR.test(metadata.secondaryColor)) || !Array.isArray(metadata.tags)) {
+          return json(res, 400, { error: "Enter a name, a matching category and garment type, valid colors, and a list of details." });
         }
         const saved = await mutate(async () => {
           const records = await loadImported();
           const existing = records.find(record => record.id === deletion[1]);
           if (!existing) return null;
           const record = { ...existing, name: metadata.name.trim(), part: metadata.part,
+            garmentType: metadata.garmentType === undefined ? (existing.part === metadata.part ? existing.garmentType || null : null) : metadata.garmentType || null,
             color: metadata.color.toLowerCase(), secondaryColor: metadata.secondaryColor?.toLowerCase() || null,
             palette: [metadata.color, metadata.secondaryColor].filter(Boolean).map(color => color.toLowerCase()),
             tags: metadata.tags.filter(tag => typeof tag === "string").map(tag => tag.trim().slice(0, 40)).filter(Boolean).slice(0, 12),

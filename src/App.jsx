@@ -3,17 +3,15 @@ import { Check, Plus, Trash, X } from "@phosphor-icons/react";
 import { WardrobeImportFlow } from "./import-flow.jsx";
 import { DailySuggestions } from "./DailySuggestions.jsx";
 import { OptimizedImage } from "./OptimizedImage.jsx";
+import { CategoryFields } from "./CategoryFields.jsx";
+import { CATEGORIES, GARMENT_TYPES, getGarmentType, getItemCategory, filterWardrobe, validGarmentType } from "./garment-types.mjs";
 
 const STORAGE_KEY = "open-wardrobe-edits-v1";
 const DELETED_STORAGE_KEY = "open-wardrobe-deleted-v1";
 
 const TYPES = [
   { id: "all", label: "All" },
-  { id: "upperbody", label: "Tops", singular: "Top" },
-  { id: "wholebody_up", label: "Jackets", singular: "Jacket" },
-  { id: "lowerbody", label: "Bottoms", singular: "Bottom" },
-  { id: "accessories_up", label: "Accessories", singular: "Accessory" },
-  { id: "shoes", label: "Shoes", singular: "Shoes" },
+  ...CATEGORIES,
 ];
 
 const TYPE_MAP = Object.fromEntries(TYPES.map((type) => [type.id, type]));
@@ -34,6 +32,7 @@ function persistEdit(item) {
   edits[item.id] = {
     name: item.name || "",
     part: item.part,
+    garmentType: item.garmentType || null,
     color: item.color || null,
     secondaryColor: item.secondaryColor || null,
     tags: item.tags || [],
@@ -104,7 +103,7 @@ function sampleImageColor(image, canvas, event) {
 }
 
 function GalleryItem({ item, selected, onOpen }) {
-  const type = TYPE_MAP[item.part]?.singular || "wardrobe item";
+  const type = getGarmentType(item)?.label || TYPE_MAP[getItemCategory(item)]?.singular || "wardrobe item";
 
   return (
     <button
@@ -209,12 +208,7 @@ function ItemEditor({ draft, setDraft, sampling, setSampling, sampleStatus }) {
         />
       </label>
 
-      <label className="field">
-        <span>Category</span>
-        <select value={draft.part} onChange={(event) => setDraft((current) => ({ ...current, part: event.target.value }))}>
-          {TYPES.slice(1).map((type) => <option value={type.id} key={type.id}>{type.label}</option>)}
-        </select>
-      </label>
+      <CategoryFields part={draft.part} garmentType={draft.garmentType} prefix="edit-item" onChange={patch => setDraft(current => ({ ...current, ...patch }))} />
 
       <fieldset className="color-field">
         <legend>Color</legend>
@@ -239,6 +233,10 @@ function ItemEditor({ draft, setDraft, sampling, setSampling, sampleStatus }) {
   );
 }
 
+function itemDraft(item) {
+  return { name: item.name || "", part: getItemCategory(item), garmentType: getGarmentType(item)?.id || "", color: item.color || "#9a9286", secondaryColor: item.secondaryColor || null, tags: [...(item.tags || [])] };
+}
+
 function ItemViewer({ item, onClose, onSave, onDelete }) {
   const closeButtonRef = useRef(null);
   const imageRef = useRef(null);
@@ -246,26 +244,28 @@ function ItemViewer({ item, onClose, onSave, onDelete }) {
   const shakeTimerRef = useRef(null);
   const [sampling, setSampling] = useState(null);
   const [sampleStatus, setSampleStatus] = useState("");
-  const [draft, setDraft] = useState({ name: item.name || "", part: item.part, color: item.color || "#9a9286", secondaryColor: item.secondaryColor || null, tags: [...(item.tags || [])] });
+  const [draft, setDraft] = useState(() => itemDraft(item));
   const [shaking, setShaking] = useState(false);
   const [closeBlocked, setCloseBlocked] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
   const [saveNotice, setSaveNotice] = useState("");
   const saveLock = useRef(false);
-  const type = TYPE_MAP[item.part]?.singular || "Wardrobe item";
+  const type = getGarmentType(item)?.label || TYPE_MAP[getItemCategory(item)]?.singular || "Wardrobe item";
 
   const isDirty = useMemo(() => {
     const normalizedTags = (tags) => tags.map((tag) => tag.trim()).filter(Boolean);
     return JSON.stringify({
       name: draft.name.trim(),
       part: draft.part,
+      garmentType: draft.garmentType,
       color: draft.color?.toLowerCase() || null,
       secondaryColor: draft.secondaryColor?.toLowerCase() || null,
       tags: normalizedTags(draft.tags),
     }) !== JSON.stringify({
       name: (item.name || "").trim(),
-      part: item.part,
+      part: getItemCategory(item),
+      garmentType: getGarmentType(item)?.id || "",
       color: item.color?.toLowerCase() || null,
       secondaryColor: item.secondaryColor?.toLowerCase() || null,
       tags: normalizedTags(item.tags || []),
@@ -313,11 +313,11 @@ function ItemViewer({ item, onClose, onSave, onDelete }) {
   useEffect(() => {
     setSampling(null);
     setSampleStatus("");
-    setDraft({ name: item.name || "", part: item.part, color: item.color || "#9a9286", secondaryColor: item.secondaryColor || null, tags: [...(item.tags || [])] });
+    setDraft(itemDraft(item));
   }, [item]);
 
   const cancelEditing = () => {
-    setDraft({ name: item.name || "", part: item.part, color: item.color || "#9a9286", secondaryColor: item.secondaryColor || null, tags: [...(item.tags || [])] });
+    setDraft(itemDraft(item));
     setSampling(null);
     setSampleStatus("");
     onClose();
@@ -328,6 +328,9 @@ function ItemViewer({ item, onClose, onSave, onDelete }) {
     setSaveError(""); setSaveNotice("");
     if (!draft.name.trim() || draft.name.trim().length > 120 || !/^#[0-9a-f]{6}$/i.test(draft.color) || (draft.secondaryColor && !/^#[0-9a-f]{6}$/i.test(draft.secondaryColor))) {
       setSaveError("Enter a name (up to 120 characters) and valid colors."); return;
+    }
+    if (!draft.garmentType || !validGarmentType(draft.part, draft.garmentType)) {
+      setSaveError("Choose a garment type for this category."); return;
     }
     saveLock.current = true; setSaving(true);
     try {
@@ -419,6 +422,7 @@ function ItemViewer({ item, onClose, onSave, onDelete }) {
 export function App() {
   const [items, setItems] = useState([]);
   const [activeType, setActiveType] = useState("all");
+  const [activeGarmentType, setActiveGarmentType] = useState("all");
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -442,18 +446,19 @@ export function App() {
   const selectedItem = items.find((item) => item.id === selectedId) || null;
 
   const visibleItems = useMemo(() => {
-    const filtered = activeType === "all" ? items : items.filter((item) => item.part === activeType);
+    const filtered = filterWardrobe(items, activeType, activeGarmentType);
     return [...filtered].sort((a, b) => {
       if (activeType === "all") {
-        const typeDifference = (TYPE_ORDER[a.part] ?? 99) - (TYPE_ORDER[b.part] ?? 99);
+        const typeDifference = (TYPE_ORDER[getItemCategory(a)] ?? 99) - (TYPE_ORDER[getItemCategory(b)] ?? 99);
         if (typeDifference) return typeDifference;
       }
       return a.id.localeCompare(b.id);
     });
-  }, [activeType, items]);
+  }, [activeType, activeGarmentType, items]);
 
   const chooseType = (typeId) => {
     setActiveType(typeId);
+    setActiveGarmentType("all");
     setSelectedId(null);
   };
 
@@ -462,7 +467,7 @@ export function App() {
     if (updatedItem.id.startsWith("import-")) {
       const response = await fetch(`/api/import/wardrobe/${updatedItem.id}`, {
         method: "PATCH", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ metadata: { name: updatedItem.name, part: updatedItem.part, color: updatedItem.color, secondaryColor: updatedItem.secondaryColor, tags: updatedItem.tags } }),
+        body: JSON.stringify({ metadata: { name: updatedItem.name, part: updatedItem.part, garmentType: updatedItem.garmentType, color: updatedItem.color, secondaryColor: updatedItem.secondaryColor, tags: updatedItem.tags } }),
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Could not save changes.");
@@ -499,7 +504,7 @@ export function App() {
         <DailySuggestions items={items} onOpen={setSelectedId} />
         <header className="gallery-header">
           <div className="gallery-meta-row">
-            <p className="piece-count">{items.length} {items.length === 1 ? "piece" : "pieces"}</p>
+            <p className="piece-count" aria-live="polite">{activeType === "all" ? items.length : `${visibleItems.length} of ${items.length}`} {items.length === 1 ? "piece" : "pieces"}</p>
           </div>
           <nav className="category-nav" aria-label="Filter wardrobe by item type">
             {TYPES.map((type) => (
@@ -514,11 +519,13 @@ export function App() {
               </button>
             ))}
           </nav>
+          {activeType !== "all" && <label className="wardrobe-type-filter"><span>Garment type</span><select value={activeGarmentType} onChange={event => setActiveGarmentType(event.target.value)}><option value="all">All {TYPE_MAP[activeType]?.label.toLowerCase()}</option>{GARMENT_TYPES.filter(type => type.part === activeType).map(type => <option key={type.id} value={type.id}>{type.label}</option>)}</select></label>}
         </header>
 
         {error && <p className="status error">{error}</p>}
         {!error && loading && <p className="status">Loading wardrobe</p>}
         {!error && !loading && !items.length && <p className="status empty">Drop, paste, or add a photo to import your first piece.</p>}
+        {!error && !loading && !!items.length && !visibleItems.length && <p className="status empty">No items match this category and garment type yet. Choose another filter or add a piece.</p>}
 
         {!!items.length && (
           <section className="gallery-grid" aria-label={`${TYPE_MAP[activeType]?.label || "All"} wardrobe items`}>

@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Check, Plus, SpinnerGap, Trash, UploadSimple, X } from "@phosphor-icons/react";
 import "./import-flow.css";
+import { CategoryFields } from "./CategoryFields.jsx";
+import { validGarmentType } from "./garment-types.mjs";
 
-const PARTS = [["upperbody", "Tops"], ["wholebody_up", "Jackets"], ["lowerbody", "Bottoms"], ["accessories_up", "Accessories"], ["shoes", "Shoes"]];
 const HEX_COLOR = /^#[0-9a-f]{6}$/i;
 const fileToDataUrl = (file) => new Promise((resolve, reject) => {
   const reader = new FileReader();
@@ -34,7 +35,7 @@ export function WardrobeImportFlow({ onGarmentApproved }) {
       }
       try {
         const imageDataUrl = await fileToDataUrl(file);
-        setItems(current => [...current, { id: crypto.randomUUID(), imageDataUrl, originalImageDataUrl: imageDataUrl, processedImageDataUrl: null, step: "photo", removing: false, removalError: "", name: "", part: "", color: "", tags: "" }]);
+        setItems(current => [...current, { id: crypto.randomUUID(), imageDataUrl, originalImageDataUrl: imageDataUrl, processedImageDataUrl: null, step: "photo", removing: false, removalError: "", name: "", part: "", garmentType: "", color: "", tags: "" }]);
         setOpen(true);
       } catch (err) { setError(err.message); }
     }
@@ -71,7 +72,7 @@ export function WardrobeImportFlow({ onGarmentApproved }) {
     } catch (err) { patchItem(id, { removalError: err.message }); }
     finally { removalRequests.current.delete(id); patchItem(id, { removing: false }); }
   };
-  const valid = item && item.name.trim() && item.part && HEX_COLOR.test(item.color);
+  const valid = item && item.name.trim() && item.part && item.garmentType && validGarmentType(item.part, item.garmentType) && HEX_COLOR.test(item.color);
   const save = async event => {
     event.preventDefault();
     if (!valid || item.step !== "details" || item.removing || saving.current) return;
@@ -79,7 +80,7 @@ export function WardrobeImportFlow({ onGarmentApproved }) {
     try {
       const response = await fetch("/api/import/wardrobe", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageDataUrl: item.imageDataUrl, metadata: { name: item.name.trim(), part: item.part, color: item.color, secondaryColor: null, tags: item.tags.split(",").map(tag => tag.trim()).filter(Boolean) } }),
+        body: JSON.stringify({ imageDataUrl: item.imageDataUrl, metadata: { name: item.name.trim(), part: item.part, garmentType: item.garmentType, color: item.color, secondaryColor: null, tags: item.tags.split(",").map(tag => tag.trim()).filter(Boolean) } }),
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Could not save this item.");
@@ -115,7 +116,7 @@ export function WardrobeImportFlow({ onGarmentApproved }) {
             <img className="import-editor__preview" src={item.imageDataUrl} alt="Your uploaded item" />
             <fieldset className="import-fields" disabled={busy} style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}>
               <div className="import-field"><label htmlFor="item-name">Name</label><input id="item-name" autoFocus required maxLength={120} value={item.name} onChange={event => update("name", event.target.value)} placeholder="e.g. Navy jacket" /></div>
-              <div className="import-field"><label htmlFor="item-category">Category</label><select id="item-category" required value={item.part} onChange={event => update("part", event.target.value)}><option value="" disabled>Choose a category</option>{PARTS.map(([id, label]) => <option key={id} value={id}>{label}</option>)}</select></div>
+              <CategoryFields part={item.part} garmentType={item.garmentType} prefix="item" className="import-field" onChange={patch => patchItem(item.id, patch)} />
               <div className="import-field"><label htmlFor="item-color">Color</label><div className="import-color-row"><input aria-label="Choose color" type="color" value={HEX_COLOR.test(item.color) ? item.color : "#000000"} onChange={event => update("color", event.target.value)} /><input id="item-color" required pattern="#[0-9a-fA-F]{6}" placeholder="#hex" value={item.color} onChange={event => update("color", event.target.value)} /></div></div>
               <div className="import-field"><label htmlFor="item-details">Details (optional)</label><input id="item-details" value={item.tags} onChange={event => update("tags", event.target.value)} placeholder="casual, cotton, striped" /><small>Separate details with commas.</small></div>
             </fieldset>

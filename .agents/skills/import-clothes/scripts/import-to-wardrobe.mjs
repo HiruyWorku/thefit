@@ -5,8 +5,9 @@ import { copyFile, mkdir, readFile, rename, stat, writeFile } from "node:fs/prom
 import path from "node:path";
 import process from "node:process";
 import sharp from "sharp";
+import { CATEGORIES, validGarmentType } from "../../../../src/garment-types.mjs";
 
-const PARTS = new Set(["upperbody", "wholebody_up", "lowerbody", "accessories_up", "shoes"]);
+const PARTS = new Set(CATEGORIES.map(category => category.id));
 const HEX = /^#[0-9a-f]{6}$/i;
 
 function usage(message) {
@@ -49,6 +50,7 @@ function normalizeItem(item) {
   const slug = safeSlug(item.slug);
   if (item.status !== "accepted") return null;
   if (!PARTS.has(item.part)) throw new Error(`${slug}: invalid part ${item.part}`);
+  if (!validGarmentType(item.part, item.garmentType)) throw new Error(`${slug}: garment type must match its category`);
   if (!HEX.test(item.color)) throw new Error(`${slug}: color must be a six-digit hex value`);
   if (item.secondaryColor !== null && item.secondaryColor !== undefined && !HEX.test(item.secondaryColor)) throw new Error(`${slug}: secondaryColor must be null or a six-digit hex value`);
   const tags = Array.isArray(item.tags)
@@ -60,6 +62,7 @@ function normalizeItem(item) {
     modeledFile: typeof item.modeledFile === "string" && item.modeledFile ? item.modeledFile : null,
     name: typeof item.name === "string" && item.name.trim() ? item.name.trim().slice(0, 120) : slug.split("-").map((word) => word[0].toUpperCase() + word.slice(1)).join(" "),
     part: item.part,
+    garmentType: item.garmentType || null,
     color: item.color.toLowerCase(),
     secondaryColor: item.secondaryColor?.toLowerCase() || null,
     tags,
@@ -147,6 +150,7 @@ for (const item of prepared) {
     id: item.id,
     name: item.name,
     part: item.part,
+    garmentType: item.garmentType,
     color: item.color,
     secondaryColor: item.secondaryColor,
     palette: [item.color, item.secondaryColor].filter(Boolean),
