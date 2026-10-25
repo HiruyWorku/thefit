@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Check, Plus, Trash, X } from "@phosphor-icons/react";
 import { WardrobeImportFlow } from "./import-flow.jsx";
+import { DailySuggestions } from "./DailySuggestions.jsx";
 import { OptimizedImage } from "./OptimizedImage.jsx";
 
 const STORAGE_KEY = "open-wardrobe-edits-v1";
@@ -161,7 +162,7 @@ function GalleryItem({ item, selected, onOpen }) {
       className={`gallery-item${selected ? " selected" : ""}`}
       type="button"
       onClick={() => onOpen(item.id)}
-      aria-label={`View ${item.name || type}`}
+      aria-label={`Edit ${item.name || type}`}
       aria-pressed={selected}
       data-testid={`wardrobe-item-${item.id}`}
     >
@@ -346,12 +347,11 @@ function ItemViewer({ item, onClose, onSave, onDelete }) {
   const [draft, setDraft] = useState({ name: item.name || "", part: item.part, color: item.color || "#9a9286", secondaryColor: item.secondaryColor || null, tags: [...(item.tags || [])] });
   const [shaking, setShaking] = useState(false);
   const [closeBlocked, setCloseBlocked] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
+  const [saveNotice, setSaveNotice] = useState("");
+  const saveLock = useRef(false);
   const type = TYPE_MAP[item.part]?.singular || "Wardrobe item";
-  const hasModeledImage = Boolean(item.modeledImage);
-  const pieceRotation = useMemo(() => {
-    const hash = [...item.id].reduce((total, character) => total + character.charCodeAt(0), 0);
-    return `${(hash % 9) - 4}deg`;
-  }, [item.id]);
 
   const isDirty = useMemo(() => {
     const normalizedTags = (tags) => tags.map((tag) => tag.trim()).filter(Boolean);
@@ -381,9 +381,10 @@ function ItemViewer({ item, onClose, onSave, onDelete }) {
   }, []);
 
   const requestClose = useCallback(() => {
+    if (saving) return;
     if (isDirty) nudgeUnsaved();
     else onClose();
-  }, [isDirty, nudgeUnsaved, onClose]);
+  }, [isDirty, nudgeUnsaved, onClose, saving]);
 
   useEffect(() => {
     const onKeyDown = (event) => {
@@ -421,10 +422,19 @@ function ItemViewer({ item, onClose, onSave, onDelete }) {
     onClose();
   };
 
-  const saveEditing = () => {
-    onSave({ ...item, ...draft, name: draft.name.trim(), tags: draft.tags.map((tag) => tag.trim()).filter(Boolean) });
-    setSampling(null);
-    setSampleStatus("Changes saved.");
+  const saveEditing = async () => {
+    if (saveLock.current) return;
+    setSaveError(""); setSaveNotice("");
+    if (!draft.name.trim() || draft.name.trim().length > 120 || !/^#[0-9a-f]{6}$/i.test(draft.color) || (draft.secondaryColor && !/^#[0-9a-f]{6}$/i.test(draft.secondaryColor))) {
+      setSaveError("Enter a name (up to 120 characters) and valid colors."); return;
+    }
+    saveLock.current = true; setSaving(true);
+    try {
+      await onSave({ ...item, ...draft, name: draft.name.trim(), tags: draft.tags.map((tag) => tag.trim()).filter(Boolean) });
+      setSampling(null);
+      setSaveNotice("Changes saved.");
+    } catch (error) { setSaveError(error.message || "Could not save changes. Please try again."); }
+    finally { saveLock.current = false; setSaving(false); }
   };
 
   const handleImageLoad = (event) => {
@@ -449,8 +459,7 @@ function ItemViewer({ item, onClose, onSave, onDelete }) {
 
   const garmentArtwork = (
     <div
-      className={`viewer-art${hasModeledImage ? " viewer-art-floating" : ""}${sampling ? " sampling" : ""}`}
-      style={hasModeledImage ? { "--piece-rotation": pieceRotation } : undefined}
+      className={`viewer-art${sampling ? " sampling" : ""}`}
     >
       <OptimizedImage
         ref={imageRef}
@@ -469,41 +478,16 @@ function ItemViewer({ item, onClose, onSave, onDelete }) {
   return (
     <div className="viewer-overlay" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && requestClose()}>
     <div className="viewer-entry">
-    <aside className={`viewer editing${hasModeledImage ? " has-modeled-image" : ""}${shaking ? " shake" : ""}`} role="dialog" aria-modal="true" aria-label="Selected wardrobe item">
+    <aside className={`viewer editing${shaking ? " shake" : ""}`} role="dialog" aria-modal="true" aria-label="Selected wardrobe item">
       <button className="viewer-icon-close" type="button" onClick={requestClose} aria-label="Close viewer" ref={closeButtonRef}>
         <X size={24} weight="light" aria-hidden="true" />
       </button>
 
-      {hasModeledImage ? (
-        <div className="modeled-hero">
-          <OptimizedImage
-            className="modeled-hero-photo"
-            src={item.modeledImage}
-            alt={`${draft.name || type} worn by a model`}
-            sizes="(max-width: 860px) 100vw, 520px"
-            breakpoints={[320, 480, 640, 800, 1040, 1280]}
-            quality={82}
-            priority
-          />
-          <div className="viewer-heading modeled-heading">
-            <div>
-              <h2>{draft.name || TYPE_MAP[draft.part]?.singular}</h2>
-            </div>
-          </div>
-          {garmentArtwork}
-        </div>
-      ) : (
-        <>
-          <div className="viewer-heading">
-            <div>
-              <h2>{draft.name || TYPE_MAP[draft.part]?.singular}</h2>
-            </div>
-          </div>
-          {garmentArtwork}
-        </>
-      )}
+      <div className="viewer-heading"><h2>{draft.name || TYPE_MAP[draft.part]?.singular}</h2></div>
+      {garmentArtwork}
 
       <div className="viewer-details editing">
+        <fieldset disabled={saving} style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}>
         <ItemEditor
           draft={draft}
           setDraft={setDraft}
@@ -513,16 +497,19 @@ function ItemViewer({ item, onClose, onSave, onDelete }) {
           sampleStatus={sampleStatus}
         />
 
+        </fieldset>
+        {saveError && <p className="unsaved-notice" role="alert">{saveError}</p>}
+        {saveNotice && <p role="status">{saveNotice}</p>}
         {closeBlocked && <p className="unsaved-notice" role="status">Save or cancel changes before closing.</p>}
 
         <div className="viewer-actions">
-          <button className="delete-button" type="button" onClick={() => onDelete(item.id)}>
+          <button className="delete-button" type="button" disabled={saving} onClick={() => onDelete(item.id)}>
             <Trash size={15} weight="regular" aria-hidden="true" /> Delete
           </button>
           <span className="action-spacer" />
-          <button className="secondary-button" type="button" onClick={cancelEditing}>Cancel</button>
-          <button className="primary-button" type="button" onClick={saveEditing}>
-            <Check size={15} weight="bold" aria-hidden="true" /> Save
+          <button className="secondary-button" type="button" disabled={saving} onClick={cancelEditing}>Cancel</button>
+          <button className="primary-button" type="button" disabled={saving} onClick={saveEditing}>
+            <Check size={15} weight="bold" aria-hidden="true" /> {saving ? "Saving…" : "Save changes"}
           </button>
         </div>
       </div>
@@ -573,9 +560,19 @@ export function App() {
     setSelectedId(null);
   };
 
-  const saveItem = (updatedItem) => {
-    setItems((current) => current.map((item) => item.id === updatedItem.id ? updatedItem : item));
-    persistEdit(updatedItem);
+  const saveItem = async (updatedItem) => {
+    let saved = updatedItem;
+    if (updatedItem.id.startsWith("import-")) {
+      const response = await fetch(`/api/import/wardrobe/${updatedItem.id}`, {
+        method: "PATCH", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ metadata: { name: updatedItem.name, part: updatedItem.part, color: updatedItem.color, secondaryColor: updatedItem.secondaryColor, tags: updatedItem.tags } }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Could not save changes.");
+      saved = result;
+      try { removePersistedEdit(updatedItem.id); } catch { /* Server already saved the item. */ }
+    } else { persistEdit(updatedItem); }
+    setItems((current) => current.map((item) => item.id === saved.id ? saved : item));
   };
 
   const deleteItem = async (id) => {
@@ -598,14 +595,11 @@ export function App() {
     setItems((current) => current.some((item) => item.id === newItem.id) ? current : [...current, newItem]);
   }, []);
 
-  const attachImportedModeledImage = useCallback((jobId, modeledImage) => {
-    const id = `import-${jobId}`;
-    setItems((current) => current.map((item) => item.id === id ? { ...item, modeledImage } : item));
-  }, []);
 
   return (
-    <div className={`app-shell${selectedItem ? " has-selection" : ""}`}>
+    <div className={`app-shell with-daily-panel${selectedItem ? " has-selection" : ""}`}>
       <main className="gallery-pane">
+        <DailySuggestions items={items} onOpen={setSelectedId} />
         <header className="gallery-header">
           <div className="gallery-meta-row">
             <p className="piece-count">{items.length} {items.length === 1 ? "piece" : "pieces"}</p>
@@ -644,7 +638,7 @@ export function App() {
       </main>
 
       {selectedItem && <ItemViewer item={selectedItem} onClose={() => setSelectedId(null)} onSave={saveItem} onDelete={deleteItem} />}
-      <WardrobeImportFlow onGarmentApproved={addImportedItem} onModeledApproved={attachImportedModeledImage} />
+      <WardrobeImportFlow onGarmentApproved={addImportedItem} />
     </div>
   );
 }

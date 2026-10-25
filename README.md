@@ -2,7 +2,7 @@
 
 # Wardrobe
 
-Your clothes, extracted and organized with gpt-image.
+Your clothes, photographed and organized by you.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-191919?style=flat-square)](LICENSE)
 [![Node 22+](https://img.shields.io/badge/node-22%2B-191919?style=flat-square)](package.json)
@@ -13,58 +13,44 @@ Your clothes, extracted and organized with gpt-image.
 
 ![Wardrobe gallery](docs/screenshots/gallery.png)
 
-![Modeled wardrobe editor](docs/screenshots/editor.png)
-
 ## Quick start
 
 ```bash
 git clone https://github.com/tandpfun/wardrobe.git
 cd wardrobe
 npm install
-cp .env.example .env
 npm run dev
 ```
 
-⚠️ The importer stays disabled until you add `OPENAI_API_KEY` to `.env` and place a PNG reference photo of yourself at `data/model-reference.png`.
+Open [localhost:5173](http://localhost:5173). No API key or reference photo is required.
 
-Open [localhost:5173](http://localhost:5173).
+## Add clothes
 
-## Import with Codex
+Choose, drop, or paste photos in the app. Use one item per photo. Preview it and choose **Remove background** or **Keep original**. Removal sends the photo to Photoroom only when clicked. Review the transparent result and choose **Use this image**, or **Restore original**. Then enter a name, select a category and primary color, and optionally add a secondary color and comma-separated details. Select **Save item** to add it to your wardrobe. When adding multiple photos, complete each item's form in turn.
 
-This repo includes two Codex skills: one imports clothes and generates modeled item photos; the other styles complete outfits and generates a modeled lookbook.
+The app stores your uploaded photo as a PNG, preserving its contents and correcting camera orientation. Optional background removal produces a transparent PNG; it does not identify garments or create modeled photos. You can return to the photo step without losing your details. Failed removal can be retried or skipped. The item viewer displays the item photo.
 
-```text
-$import-clothes Import the clothes from ~/Pictures/outfits, create modeled photos, and add them to this wardrobe.
-$generate-outfits Create modeled outfit ideas from my wardrobe.
-```
+Photos must be PNG, JPEG, or WebP, smaller than 18 MB and no larger than 40 megapixels. Saved items and photos stay in `data/library.json` and `data/imported/`. Unsaved forms last for the current page session.
 
-Open the cloned repo in Codex and run either prompt. The import skill asks for a local model-reference PNG when needed, reviews every cutout and modeled photo, then writes to `data/library.json` and `data/imported/`. The outfit skill asks how many looks to create, then curates, generates, verifies, and saves the complete collection under `data/`.
+## Daily suggestions
 
-### For agents
+The Daily suggestions panel uses **Use my location** to request browser location permission and fetch weather from Open-Meteo. Location access requires HTTPS or localhost. Approximate coordinates are sent to the weather provider and are not saved by this app. Weather refreshes every 30 minutes while the page is open; use **Refresh location** after moving.
 
-If you are setting up Wardrobe for a user, ask how they want to import their clothes:
+Suggestions use the current feels-like temperature (hot: 25°C or above; cool: below 15°C) and today's rain chance. The panel selects only existing wardrobe items using their categories, names, and details, with pictures ordered hat, top, jacket when needed, bottoms, shoes. Add specific names or details such as “T-shirt,” “shorts,” and “waterproof” for better matches. Missing categories are noted; matching is a simple rule-based starting point, not AI styling. Click a suggested photo to edit it, or try another combination of equally suitable pieces.
 
-- **Codex:** Ask for a folder or camera-roll location and a model-reference PNG, then extract, model, and import the individual pieces by following [the bundled import skill](.agents/skills/import-clothes/SKILL.md). Afterward, offer to create a requested number of modeled looks with [the outfit-generation skill](.agents/skills/generate-outfits/SKILL.md).
-- **Web UI:** Help the user configure their own `OPENAI_API_KEY` and `data/model-reference.png`, then let them import through the app.
+## Preview an outfit on yourself
 
-## What it does
+After getting a daily suggestion, click **Try this look on me**. Set `OPENAI_API_KEY` and `WARDROBE_MODEL_REFERENCE` (default `data/model-reference.png`) in `.env.local`, then restart the server. `OPENAI_IMAGE_MODEL` defaults to `gpt-image-2`; `OPENAI_IMAGE_QUALITY` defaults to `high`.
 
-- Detects every garment in a photo with the OpenAI Responses API
-- Extracts clean product cutouts with the OpenAI Images API
-- Generates an optional modeled editorial preview
-- Keeps originals, jobs, generated images, and the JSON database local in `data/`
-- Supports drag, drop, paste, editing, review, regeneration, and approval
+The button sends your reference photo and the suggested garment images to OpenAI's image-edit API. Generation can take a few minutes and uses your OpenAI API credits. The result appears below the outfit and can be downloaded. It is an AI visualization, not a measurement of actual fit. Changing the suggested pieces hides the previous preview. The server temporarily caches up to five results until restart, and does not modify your wardrobe photos.
 
 ## Configuration
 
-| Variable | Default |
-| --- | --- |
-| `OPENAI_API_KEY` | Required |
-| `OPENAI_VISION_MODEL` | `gpt-5.4-mini` |
-| `OPENAI_IMAGE_MODEL` | `gpt-image-2` |
-| `OPENAI_IMAGE_QUALITY` | `high` |
-| `WARDROBE_MODEL_REFERENCE` | `data/model-reference.png` |
-| `WARDROBE_DATA_DIR` | `data` |
+To enable background removal, set `PHOTOROOM_API_KEY` in `.env` or `.env.local` and restart the dev server. The key stays on the server. Standard imports work without it. Processing copies are resized to at most 6,000 pixels per side and 25 megapixels; the original remains available until you save. Previewing or removing a background does not save a wardrobe entry.
+
+`WARDROBE_DATA_DIR` optionally changes the storage directory (default: `data`). Run the Vite dev or preview server for the local storage API; a static-only host cannot save uploads.
+
+The bundled AI skills remain available for separately requested workflows, but the app does not invoke them or resume old generation jobs.
 
 ## License
 
