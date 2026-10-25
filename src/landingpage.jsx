@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { signUpUser, signInUser, signOutUser } from './auth';
 
 export default function LandingPage() {
   // Continuous floating animation for hero images
@@ -139,6 +140,13 @@ export default function LandingPage() {
           </motion.div>
         </div>
       </header>
+
+      {/* --- Supabase Authentication --- */}
+      <section className="px-8 lg:px-16 py-12 flex justify-center border-t border-editorial-gray/10">
+        <AuthComponent />
+      </section>
+      {/* --------------------------------- */}
+
 
       {/* Feature 1: Digitize */}
       <section className="relative px-8 lg:px-16 py-24 md:py-32 grid grid-cols-1 lg:grid-cols-2 gap-16 md:gap-24 items-center">
@@ -324,4 +332,75 @@ export default function LandingPage() {
 
     </div>
   );
+}
+
+// --- PASTE THIS ENTIRE COMPONENT AT THE VERY BOTTOM ---
+export function AuthComponent() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [username, setUsername] = useState('')
+  const [status, setStatus] = useState('')
+
+  const handleSignUp = async () => {
+    setStatus('Creating account...')
+    const { error } = await signUpUser(email, password, username)
+    setStatus(error ? error.message : 'Account created! Please log in.')
+  }
+
+  const handleLogin = async () => {
+    setStatus('Logging in...')
+    const { error } = await signInUser(email, password)
+    setStatus(error ? error.message : 'Logged in successfully!')
+  }
+
+  return (
+    <div className="w-full max-w-md bg-gray-50 p-8 rounded-xl shadow-lg border border-editorial-gray/10">
+      <h3 className="font-serif text-2xl font-semibold mb-6 text-center">Access Wardrobe</h3>
+      
+      <div className="flex flex-col gap-4">
+        <input 
+          type="text" 
+          placeholder="Username (Required for Sign Up)" 
+          value={username} 
+          onChange={(e) => setUsername(e.target.value)}
+          className="px-4 py-3 rounded-lg border border-editorial-gray/20 focus:outline-none focus:border-editorial-black"
+        />
+        <input 
+          type="email" 
+          placeholder="Email address" 
+          value={email} 
+          onChange={(e) => setEmail(e.target.value)}
+          className="px-4 py-3 rounded-lg border border-editorial-gray/20 focus:outline-none focus:border-editorial-black"
+        />
+        <input 
+          type="password" 
+          placeholder="Password" 
+          value={password} 
+          onChange={(e) => setPassword(e.target.value)}
+          className="px-4 py-3 rounded-lg border border-editorial-gray/20 focus:outline-none focus:border-editorial-black"
+        />
+        
+        <div className="flex gap-4 mt-2">
+          <button 
+            onClick={handleSignUp}
+            className="flex-1 bg-white text-editorial-black border border-editorial-black px-4 py-2.5 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors"
+          >
+            Sign Up
+          </button>
+          <button 
+            onClick={handleLogin}
+            className="flex-1 bg-editorial-black text-white px-4 py-2.5 rounded-full text-sm font-medium hover:bg-black/80 transition-colors shadow-lg"
+          >
+            Log In
+          </button>
+        </div>
+      </div>
+      
+      {status && (
+        <p className="mt-6 text-sm text-center font-medium text-editorial-gray">
+          {status}
+        </p>
+      )}
+    </div>
+  )
 }
