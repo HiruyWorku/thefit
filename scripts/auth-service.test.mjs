@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createAuthService } from '../src/auth-service.mjs';
 import { supabaseConfiguration } from '../src/supabase-config.mjs';
 
-test('missing or malformed Supabase settings leave local mode available instead of throwing', async () => {
+test('missing or malformed Supabase settings return a recoverable configuration error', async () => {
   assert.ok(supabaseConfiguration({}).error);
   assert.ok(supabaseConfiguration({ VITE_SUPABASE_URL: 'bad-url', VITE_SUPABASE_ANON_KEY: 'test-public-key' }).error);
   assert.equal(supabaseConfiguration({ VITE_SUPABASE_URL: 'https://example.supabase.co', VITE_SUPABASE_ANON_KEY: 'test-public-key' }).error, '');

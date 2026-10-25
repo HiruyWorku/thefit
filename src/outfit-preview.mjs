@@ -1,8 +1,10 @@
 const previews = new Map();
 const pending = new Map();
+let generation = 0;
+export function clearOutfitPreviews() { generation++; previews.clear(); pending.clear(); }
 
 export function outfitPreviewKey(outfit) {
-  return JSON.stringify((outfit?.chosen || []).map(({ item }) => [item.id, item.name, item.part, item.garmentType, item.color, item.secondaryColor, item.tags, item.image]));
+  return JSON.stringify([generation, (outfit?.chosen || []).map(({ item }) => [item.id, item.name, item.part, item.garmentType, item.color, item.secondaryColor, item.tags, item.image])]);
 }
 
 export const cachedOutfitPreview = outfit => previews.get(outfitPreviewKey(outfit)) || null;
@@ -21,6 +23,7 @@ export async function requestOutfitPreview(outfit, fetcher = fetch) {
     throw new Error('Choose between one and five unique wardrobe pieces.');
   }
   const key = outfitPreviewKey(outfit);
+  const requestGeneration = generation;
   if (previews.has(key)) return previews.get(key);
   if (pending.has(key)) return pending.get(key);
   const task = (async () => {
@@ -28,11 +31,14 @@ export async function requestOutfitPreview(outfit, fetcher = fetch) {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ itemIds: ids }),
     });
     const result = await response.json().catch(() => ({}));
-    if (!response.ok || !result.imageDataUrl) throw new Error(result.error || 'Could not generate your preview.');
-    if (previews.size >= 5) previews.delete(previews.keys().next().value);
-    previews.set(key, result.imageDataUrl);
-    return result.imageDataUrl;
+    const image = result.imageUrl || result.imageDataUrl;
+    if (!response.ok || !image) throw new Error(result.error || 'Could not generate your preview.');
+    if (generation === requestGeneration) {
+      if (previews.size >= 5) previews.delete(previews.keys().next().value);
+      previews.set(key, image);
+    }
+    return image;
   })();
   pending.set(key, task);
-  try { return await task; } finally { pending.delete(key); }
+  try { return await task; } finally { if (pending.get(key) === task) pending.delete(key); }
 }

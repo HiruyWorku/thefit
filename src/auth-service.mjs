@@ -1,4 +1,4 @@
-const unavailable = () => ({ data: null, error: { message: 'Account sign-in is not configured. You can still open the local wardrobe.' } });
+const unavailable = () => ({ data: null, error: { message: 'Account sign-in is not configured. Please configure Supabase to access your wardrobe.' } });
 const connectionError = () => ({ data: null, error: { message: 'Could not reach the account service. Please try again.' } });
 const usernamePattern = /^[a-z0-9][a-z0-9_.-]{1,29}$/;
 

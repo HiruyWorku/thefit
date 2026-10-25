@@ -12,9 +12,6 @@ import { rememberOutfitPreview } from "./outfit-preview.mjs";
 import { BUILDER_SLOTS, BUILDER_STORAGE_KEY, OUTFIT_DRAG_TYPE, addBuilderItem, builderSlotFor, customizeOutfit, parseBuilderDraft, resolveBuilderOutfit } from "./outfit-builder.mjs";
 import "./outfit-builder.css";
 
-const STORAGE_KEY = "open-wardrobe-edits-v1";
-const DELETED_STORAGE_KEY = "open-wardrobe-deleted-v1";
-
 const TYPES = [
   { id: "all", label: "All" },
   ...CATEGORIES,
@@ -23,49 +20,6 @@ const TYPES = [
 const TYPE_MAP = Object.fromEntries(TYPES.map((type) => [type.id, type]));
 const TYPE_ORDER = Object.fromEntries(TYPES.slice(1).map((type, index) => [type.id, index]));
 
-
-function readEdits() {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-  } catch {
-    return {};
-  }
-}
-
-
-function persistEdit(item) {
-  const edits = readEdits();
-  edits[item.id] = {
-    name: item.name || "",
-    part: item.part,
-    garmentType: item.garmentType || null,
-    color: item.color || null,
-    secondaryColor: item.secondaryColor || null,
-    tags: item.tags || [],
-  };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(edits));
-}
-
-function removePersistedEdit(id) {
-  const edits = readEdits();
-  delete edits[id];
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(edits));
-}
-
-function readDeletedItems() {
-  try {
-    const value = JSON.parse(localStorage.getItem(DELETED_STORAGE_KEY) || "[]");
-    return new Set(Array.isArray(value) ? value : []);
-  } catch {
-    return new Set();
-  }
-}
-
-function persistDeletedItem(id) {
-  const deleted = readDeletedItems();
-  deleted.add(id);
-  localStorage.setItem(DELETED_STORAGE_KEY, JSON.stringify([...deleted]));
-}
 
 function rgbToHex(red, green, blue) {
   return `#${[red, green, blue].map((value) => Math.max(0, Math.min(255, value)).toString(16).padStart(2, "0")).join("")}`;
@@ -433,7 +387,8 @@ function ItemViewer({ item, onClose, onSave, onDelete }) {
   );
 }
 
-export function App() {
+export function App({ userId }) {
+  const draftKey = `${BUILDER_STORAGE_KEY}:${userId}`;
   const [items, setItems] = useState([]);
   const [activeType, setActiveType] = useState("all");
   const [activeGarmentType, setActiveGarmentType] = useState("all");
@@ -442,7 +397,7 @@ export function App() {
   const [error, setError] = useState("");
   const [outfitMode, setOutfitMode] = useState('suggested');
   const [builderSelection, setBuilderSelection] = useState(() => {
-    try { return parseBuilderDraft(localStorage.getItem(BUILDER_STORAGE_KEY)); } catch { return {}; }
+    try { return parseBuilderDraft(localStorage.getItem(draftKey)); } catch { return {}; }
   });
   const [activeSlot, setActiveSlot] = useState(null);
   const [builderMessage, setBuilderMessage] = useState('');
@@ -455,21 +410,18 @@ export function App() {
   const selectedBuilderIds = new Set(builtOutfit.chosen.map(({ item }) => item.id));
 
   useEffect(() => {
-    try { localStorage.setItem(BUILDER_STORAGE_KEY, JSON.stringify(builderSelection)); setDraftStorageError(false); }
+    try { localStorage.setItem(draftKey, JSON.stringify(builderSelection)); setDraftStorageError(false); }
     catch { setDraftStorageError(true); }
-  }, [builderSelection]);
+  }, [builderSelection, draftKey]);
 
   useEffect(() => {
     fetch("/api/import/wardrobe", { cache: "no-store" })
       .then((response) => {
-        if (!response.ok) throw new Error("Could not load the wardrobe.");
+        if (!response.ok) return response.json().then(result => { throw new Error(result.error || 'Could not load your wardrobe.'); });
         return response.json();
       })
       .then((loadedItems) => {
-        const edits = readEdits();
-        const deleted = readDeletedItems();
-        const visibleItems = loadedItems.filter((item) => !deleted.has(item.id));
-        setItems(visibleItems.map((item) => ({ ...item, ...(edits[item.id] || {}) })));
+        setItems(loadedItems);
       })
       .catch((requestError) => setError(requestError.message))
       .finally(() => setLoading(false));
@@ -558,7 +510,7 @@ export function App() {
 
   const saveItem = async (updatedItem) => {
     let saved = updatedItem;
-    if (updatedItem.id.startsWith("import-")) {
+    {
       const response = await fetch(`/api/import/wardrobe/${updatedItem.id}`, {
         method: "PATCH", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ metadata: { name: updatedItem.name, part: updatedItem.part, garmentType: updatedItem.garmentType, color: updatedItem.color, secondaryColor: updatedItem.secondaryColor, tags: updatedItem.tags } }),
@@ -566,13 +518,12 @@ export function App() {
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Could not save changes.");
       saved = result;
-      try { removePersistedEdit(updatedItem.id); } catch { /* Server already saved the item. */ }
-    } else { persistEdit(updatedItem); }
+    }
     setItems((current) => current.map((item) => item.id === saved.id ? saved : item));
   };
 
   const deleteItem = async (id) => {
-    if (id.startsWith("import-")) {
+    {
       try {
         const response = await fetch(`/api/import/wardrobe/${id}`, { method: "DELETE" });
         if (!response.ok && response.status !== 404) throw new Error("Could not delete the imported item.");
@@ -582,8 +533,6 @@ export function App() {
       }
     }
     setItems((current) => current.filter((item) => item.id !== id));
-    removePersistedEdit(id);
-    persistDeletedItem(id);
     setSelectedId(null);
   };
 

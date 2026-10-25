@@ -30,7 +30,7 @@ export function AuthComponent() {
   const logout = async () => { setError(''); const result = await signOutUser(); if (result.error) setError(result.error.message); };
   return <div className="auth-panel">
     <h3>Access your wardrobe</h3>
-    {!configured ? <><p role="status">{configurationError}</p><Link className="auth-primary" to="/app">Open local wardrobe</Link></> : loading ? <p role="status">Checking your session…</p> : session ? <>
+    {!configured ? <p role="status">{configurationError}</p> : loading ? <p role="status">Checking your session…</p> : session ? <>
       <p>Signed in as {profile?.username || session.user.email}.</p>
       {profileError && <p role="status">{profileError}</p>}
       <div className="auth-actions"><Link className="auth-primary" to="/app">Open wardrobe</Link><button type="button" onClick={logout}>Sign out</button></div>
@@ -47,6 +47,6 @@ export function AuthComponent() {
       {message && <p role="status">{message}</p>}
     </>}
     {error && <p className="auth-error" role="alert">{error}</p>}
-    <p className="auth-storage-note">Account sign-in uses Supabase. Your wardrobe photos and saved fits stay on this app’s local server.</p>
+    <p className="auth-storage-note">Your wardrobe photos and saved fits are private to your account and stored in Supabase.</p>
   </div>;
 }

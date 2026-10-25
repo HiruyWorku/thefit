@@ -3,6 +3,7 @@ import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
 import { CATEGORIES, validGarmentType } from "../src/garment-types.mjs";
+import { cloudWardrobeStore } from './cloud-wardrobe-store.mjs';
 
 const LIBRARY_ASSET_ROOT = "/api/import/library";
 const PARTS = new Set(CATEGORIES.map(category => category.id));
@@ -50,14 +51,17 @@ export function wardrobeImportApi(options = {}) {
   async function handler(req, res, next) {
     const url = new URL(req.url, "http://localhost");
     if (!url.pathname.startsWith("/api/import/")) return next();
+    if (options.backgroundOnly && url.pathname !== '/api/import/remove-background') return next();
     try {
       if (url.pathname === "/api/import/remove-background" && req.method === "POST") {
         const key = options.env?.PHOTOROOM_API_KEY || process.env.PHOTOROOM_API_KEY;
         if (!key?.trim()) return json(res, 503, { error: "Background removal is not configured. Add PHOTOROOM_API_KEY and restart the server, or keep the original." });
         const input = await body(req);
+        const store = req.account ? cloudWardrobeStore(req.account) : null;
         const match = typeof input.imageDataUrl === "string" && input.imageDataUrl.match(/^data:image\/(?:png|jpeg|webp);base64,(.+)$/s);
-        if (!match) return json(res, 400, { error: "Choose a PNG, JPEG, or WebP photo." });
-        const bytes = Buffer.from(match[1], "base64");
+        if (input.imagePath && (!store || !/^items\/import-[a-f0-9-]{36}-garment\.png$/.test(input.imagePath))) return json(res, 400, { error: 'Choose a valid private photo.' });
+        if (!input.imagePath && !match) return json(res, 400, { error: "Choose a PNG, JPEG, or WebP photo." });
+        const bytes = input.imagePath ? await store.readImage(input.imagePath) : Buffer.from(match[1], "base64");
         if (bytes.length > 18 * 1024 * 1024) return json(res, 413, { error: "Choose a photo smaller than 18 MB." });
         let photo;
         try {
@@ -98,6 +102,11 @@ export function wardrobeImportApi(options = {}) {
           if (metadata.format !== "png" || !metadata.hasAlpha) throw new Error("Invalid result");
           await image.stats(); // Decode the full image to reject truncated output.
         } catch { return json(res, 502, { error: "Photoroom returned an invalid image. Retry or keep the original." }); }
+        if (store) {
+          const filename = `import-${randomUUID()}-garment.png`;
+          await store.writeImage(`items/${filename}`, output);
+          return json(res, 200, { imageUrl: `${LIBRARY_ASSET_ROOT}/${filename}` });
+        }
         return json(res, 200, { imageDataUrl: `data:image/png;base64,${output.toString("base64")}` });
       }
       if (url.pathname === "/api/import/wardrobe" && req.method === "GET") return json(res, 200, await loadImported());
@@ -178,6 +187,7 @@ export function wardrobeImportApi(options = {}) {
   return {
     name: "wardrobe-import-api", apply: "serve",
     async configResolved(config) {
+      if (options.backgroundOnly) return;
       const dataDir = path.resolve(config.root, options.env?.WARDROBE_DATA_DIR || process.env.WARDROBE_DATA_DIR || "data");
       importedFile = path.join(dataDir, "library.json");
       libraryAssetDir = path.join(dataDir, "imported");

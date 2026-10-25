@@ -22,3 +22,9 @@
 .app-site-nav button, .app-site-nav > div a { min-height: 40px; display: inline-flex; align-items: center; border: 0; background: transparent; color: var(--ink); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .app-account-notice { margin: 14px 56px 0; color: var(--muted); font-size: 12px; }
 @media (max-width: 650px) { .app-site-nav { padding: 12px 18px; } .app-account-notice { margin-inline: 18px; } .auth-panel { padding: 22px; } }
+.auth-route-status { max-width: 40rem; margin: 15vh auto; padding: 2rem; }
+.reference-photo { margin: 0.75rem 0; font-size: 0.85rem; }
+.reference-photo summary { cursor: pointer; padding-block: 0.5rem; }
+.reference-photo p { color: var(--muted, #6e6a63); margin: 0.5rem 0; }
+.reference-photo label { display: block; margin-block: 0.5rem; }
+.reference-photo input { max-width: 100%; }

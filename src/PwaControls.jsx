@@ -36,7 +36,7 @@ export function PwaControls() {
         <button className="pwa-install" type="button" onClick={install}>Install The Fit</button>
       )}
       {help && <p role="status">In Safari, open Share, then choose Add to Home Screen.</p>}
-      {offline && <p role="status">You’re offline. Previously loaded clothes are available. Connect to upload, save changes, get weather, or try on outfits.</p>}
+      {offline && <p role="status">You’re offline. Connect to access your private wardrobe, save changes, get weather, or try on outfits.</p>}
     </div>
   );
 }

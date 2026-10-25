@@ -16,7 +16,7 @@ The Fit lets users browse their clothing, get weather-based outfit suggestions, 
 
 ## Operating Context
 
-The existing React/Vite app stores garment metadata and transparent photos locally. Desktop and mobile web interactions must work. User-approved outfit building uses a wardrobe gallery beside a slot-based outfit board on desktop and a compact board above the gallery on mobile.
+The React/Vite app requires login and stores account-owned garment metadata and photos in Supabase with Row Level Security and a private bucket. Existing local photos are preserved as a backup, not shared with new accounts. Desktop and mobile web interactions must work. User-approved outfit building uses a wardrobe gallery beside a slot-based outfit board on desktop and a compact board above the gallery on mobile.
 
 ## Capabilities and Constraints
 

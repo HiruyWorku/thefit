@@ -103,7 +103,7 @@ export default function LandingPage() {
           transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
           className="relative z-10 mt-8 text-lg md:text-xl text-[#1C2321]/60 max-w-2xl font-light"
         >
-          A smart digital wardrobe with weather-based daily suggestions and AI-powered try-ons. Hosted locally, powered by you.
+          A smart digital wardrobe with weather-based daily suggestions and AI-powered try-ons. Your clothes, private to your account.
         </motion.p>
 
         {/* Animated Floating Grid */}
@@ -201,7 +201,7 @@ export default function LandingPage() {
             </motion.li>
             <motion.li variants={listItem} className="flex items-center gap-4">
               <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-[#E8EDE9] text-[#1A365D]">🔒</span>
-              Local privacy-first storage
+              Private account storage
             </motion.li>
           </motion.ul>
         </div>
@@ -288,7 +288,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
             className="text-lg text-[#1C2321]/60 font-light mb-10 max-w-md leading-relaxed"
           >
-            Provide a reference photo and let the integrated OpenAI vision model drape suggested garments onto your silhouette. It's a digital fitting room, generating conceptual previews in seconds.
+            Add a reference photo to create an AI preview of your outfit, or open the live camera mirror. Photo previews can take a few minutes and may differ from the actual fit.
           </motion.p>
 
           <motion.ul
@@ -321,7 +321,7 @@ export default function LandingPage() {
         </div>
 
         <p className="text-xs text-[#1C2321]/50 font-bold uppercase tracking-widest">
-          MIT Licensed <span className="mx-2 font-normal text-[#1A365D]">/</span> Local First
+          MIT Licensed <span className="mx-2 font-normal text-[#1A365D]">/</span> Private Wardrobe
         </p>
 
         <div className="flex gap-4">

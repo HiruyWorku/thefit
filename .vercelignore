@@ -1,0 +1,14 @@
+.env
+.env.*
+!.env.example
+.git
+.vercel
+node_modules
+dist
+data
+docs/screenshots
+sample-wardrobe
+.agents
+.codex
+.impeccable
+*.log

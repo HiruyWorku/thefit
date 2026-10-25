@@ -1,109 +1,93 @@
-<div align="center">
+# thefit
 
-# The Fit
+A private wardrobe app with weather-based outfit suggestions, a custom outfit builder, a saved-fit calendar, and optional live and photo try-on.
 
-A local-first clothing gallery with photo uploads, weather-based outfit suggestions, and optional AI try-on previews.
+## Features
 
-[![Node 22+](https://img.shields.io/badge/node-22%2B-191919?style=flat-square)](package.json)
+- **Your wardrobe:** upload PNG, JPEG or WebP photos, optionally remove backgrounds, and organize items by category, garment type, color and details.
+- **Daily outfits:** choose Everyday, Smart casual or Active / workout. The local recommendation engine balances weather, garment roles, formality, warmth and color without calling an AI API.
+- **Build a fit:** choose any combination of top, bottoms, footwear, outerwear and headwear. All five slots are optional. Tap to select or drag pieces into matching slots on desktop.
+- **Outfit calendar:** save suggested or custom looks with garment snapshots and an existing photo preview. Revisit them by date or load them back into the builder.
+- **Live mirror:** preview your camera for free, then explicitly start a Decart live try-on with a 90-second limit.
+- **Photo previews:** upload your own reference photo and explicitly generate an OpenAI outfit visualization.
 
-</div>
+Sign-in is required. Garments, photos, reference photos, previews and saved fits belong to the signed-in account in Supabase. New accounts start with an empty wardrobe.
 
-![The Fit gallery](docs/screenshots/gallery.png)
+## Run locally
 
-## Quick start
-
-Use Node.js 22 or newer and npm. Download or clone The Fit, then open a terminal in the project directory and run:
-
-```bash
-npm install
-npm run dev
-```
-
-Open [localhost:5173](http://localhost:5173) for the landing page, then choose **Open Closet**, or go directly to [the wardrobe](http://localhost:5173/app). Local wardrobe features work without account sign-in, paid API keys, or a reference photo.
-
-To enable optional background removal or outfit try-on, copy the configuration template if you do not already have a `.env.local` file:
+Use **Node.js 24** and npm.
 
 ```bash
+npm ci
 cp .env.example .env.local
 ```
 
-Fill in the keys for the features you want to use, then restart the server. For try-on, also add your reference photo at `data/model-reference.png` or update the reference photo path in `.env.local` using the setting in `.env.example`.
+Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in the ignored env file. Apply [the Supabase migration](supabase/migrations/202610250001_private_wardrobe.sql) in that project's SQL Editor, and allow your local app URL in Supabase's Auth URL configuration.
 
-## Add clothes
+```bash
+npm run dev
+```
 
-Choose, drop, or paste photos in the app. Use one item per photo. Preview it and choose **Remove background** or **Keep original**. Removal sends the photo to Photoroom only when clicked. Review the transparent result and choose **Use this image**, or **Restore original**. Then enter a name, select a category, specific garment type, and color, and optionally add comma-separated details. Select **Save item** to add it to your collection. When adding multiple photos, complete each item's form in turn.
+Open [http://127.0.0.1:5173](http://127.0.0.1:5173), create an account, confirm your email if required, and sign in. Use the same hostname consistently: `localhost` and `127.0.0.1` have separate browser sessions.
 
-Browse by **Tops**, **Outerwear**, **Bottoms**, **Footwear**, **Headwear**, or **Accessories**, then narrow a category by garment type (for example, puffer jackets, jeans, or loafers). The piece count reflects the selected filters, with the wardrobe total alongside it. Existing items infer their garment type from names/details until you explicitly save one; a saved garment type takes priority. Caps are headwear, while bags, belts, scarves, and gloves stay in Accessories and are not used as hats in recommendations.
-
-The app stores your uploaded photo as a PNG, preserving its contents and correcting camera orientation. Optional background removal produces a transparent PNG; it does not identify garments or create modeled photos. You can return to the photo step without losing your details. Failed removal can be retried or skipped. The item viewer displays the item photo.
-
-Photos must be PNG, JPEG, or WebP, smaller than 18 MB and no larger than 40 megapixels. Saved items and photos stay in `data/library.json` and `data/imported/`. Unsaved forms last for the current page session.
-
-To load the bundled **41-piece sample wardrobe**, stop the app server and run `npm run seed:wardrobe`, then start it again. The import preserves existing items and edits and skips duplicate IDs. It uses no paid APIs. The 28 PNGimg stock photos require attribution and **noncommercial use**; see [the sample wardrobe and image credits](sample-wardrobe/README.md). Local uploads, API keys, and reference photos remain ignored by Git.
-
-## Daily suggestions
-
-The Daily suggestions panel uses **Use my location** to request browser location permission and fetch weather from Open-Meteo. Location access requires HTTPS or localhost. Approximate coordinates are sent to the weather provider and are not saved by this app. Weather refreshes every 30 minutes while the page is open; use **Refresh location** after moving.
-
-Suggestions compare complete outfits using the current feels-like temperature, wind, and the next three forecast hours when available. Choose **Everyday**, **Smart casual**, or **Active / workout** to guide the look. Explicit garment types take priority, followed by inferred names/details and legacy categories, so a puffer accidentally labeled as a top cannot become a second jacket. Each outfit contains a base top, suitable bottoms and shoes, at most one outer layer, and optional weather-appropriate headwear.
-
-Smart casual requires collared tops or simple knitwear, refined full-length bottoms (including undistressed dark jeans), and dress shoes, minimal sneakers, or dress boots. Hoodies, athletic shorts, running shoes, and work boots cannot fill smart casual slots. Active looks require easy-moving tops, athletic bottoms, and training shoes. Missing suitable clothing is reported instead of silently substituting an incompatible style. Weather rules still apply, and a functional outer layer may be needed over a smart casual base.
-
-The local engine balances combined layer warmth, rain coverage, formality, and color harmony. Each piece has a short explanation; wardrobe gaps and inferred category corrections are shown. **Try another look** cycles through distinct combinations close to the best score without relaxing the weather rules. This uses descriptive metadata and transparent heuristics, not a vision model or measured clothing performance. Recommendations do not call OpenAI, Photoroom, or Decart. See [the algorithm notes](docs/outfit-recommendations.md) for the rules and limitations.
-
-## Build your own outfit
-
-Choose **Build a fit** beside **Suggested outfit**. All five slots—**Top**, **Bottoms**, **Footwear**, **Outerwear**, and **Headwear**—are optional. Tap a slot and then a piece in the filtered wardrobe. Selecting another piece replaces that slot; use the remove button to empty a slot or **Clear outfit** to start again. Desktop users can also drag a wardrobe piece into its matching slot. The pencil beside a garment still opens its editor.
-
-The outfit board stays beside the gallery on desktop and appears above it on mobile. **View your fit** returns to the board after browsing. The draft stays on the current device, and edits to a selected garment are reflected automatically; deleted or reclassified garments leave their old slots empty. On a daily suggestion, **Customize this look** starts a draft from those pieces. Switching modes preserves the suggestion and custom draft separately.
-
-Building or changing an outfit makes no paid API calls. Once at least one piece is selected, the existing live and photo try-on actions become available. Live first opens a free camera preview and still requires an explicit paid start. Photo generation starts only on its button, shares concurrent requests for the same look, and reuses the five most recent completed previews in memory until the page reloads.
-
-Use **Save fit of the day** on a custom or suggested outfit to keep its selected pieces, the local calendar date, and any existing photo preview. Saving does not require a try-on and never calls a paid provider. **Saved fits** opens a monthly outfit calendar: marked days have saved looks, selecting a day reveals them, and **Today** returns to the current date. Month arrows and keyboard arrows navigate the calendar. **Load in builder** restores available wardrobe pieces for editing or another try-on. Repeated saves of an unchanged outfit on the same day reuse the same record; another selection or date creates a separate entry. Saved garment snapshots remain viewable after an original wardrobe item is removed, and missing pieces are called out when restoring the fit.
-
-Saved fits are local server data in `data/saved-outfits.json` and `data/saved-outfits/` (or the configured data directory), and remain ignored by Git. Back up the whole data directory to preserve this history. Loading an unchanged saved fit reuses its saved photo preview without regenerating it; changes to the selected pieces or their details invalidate that reuse. Live video is not recorded by the save action; it stores the selected garments and any already-generated photo preview.
-
-## Preview an outfit on yourself
-
-After getting a daily suggestion, click **Try this look on me**. Set `OPENAI_API_KEY` in `.env.local` and add your reference photo at `data/model-reference.png`, then restart the server. To use another local photo path, update the reference photo setting shown in `.env.example`. `OPENAI_IMAGE_MODEL` defaults to `gpt-image-2`; `OPENAI_IMAGE_QUALITY` defaults to `high`.
-
-The button sends your reference photo and the suggested garment images to OpenAI's image-edit API. Generation can take a few minutes and uses your OpenAI API credits. The result appears below the outfit and can be downloaded. It is an AI visualization, not a measurement of actual fit. Changing the suggested pieces hides the previous preview. The server temporarily caches up to five results until restart, and does not modify your collection photos.
-
-## Live camera try-on
-
-With `DECART_API_KEY` set in `.env.local`, select **See this outfit live** in a weather-based suggestion. The app first opens a free local camera preview. Select **Start live try-on** to send the camera and outfit to Decart using a short-lived client token and standard-speed 720p Lucy VTON. The live session stops when you close the panel, select **Stop try-on**, or after 90 seconds. Missing or stalled video stops the session early to conserve credits; a connected session is only labeled live after the browser decodes a frame. Decart charges realtime usage by generated-video second. Drag or click **Full outfit** or a suggested piece to apply that selection. This feature does not call OpenAI or Photoroom.
+The landing page is `/`; your protected wardrobe is `/app`.
 
 ## Configuration
 
-Set these values in `.env.local` and restart the server after changes. Paid provider keys stay on the server; keep all real credentials out of source control. Supabase's `VITE_` settings are its public browser configuration. See [account setup and storage behavior](docs/authentication.md).
+| Variable | Purpose |
+| --- | --- |
+| `VITE_SUPABASE_URL` | Required public Supabase project URL. |
+| `VITE_SUPABASE_ANON_KEY` | Required public Supabase browser key. |
+| `PHOTOROOM_API_KEY` | Optional server key for **Remove background**. |
+| `DECART_API_KEY` | Optional server key for live try-on. |
+| `OPENAI_API_KEY` | Optional server key for photo try-on. |
+| `OPENAI_IMAGE_MODEL` | Photo model; defaults to `gpt-image-2`. |
+| `OPENAI_IMAGE_QUALITY` | Photo quality; defaults to `high`. |
+| `APP_HTTPS` | Set to `true` on Vercel so session cookies are Secure. |
 
-| Variable | Purpose | Default |
-| --- | --- | --- |
-| `VITE_SUPABASE_URL` | Enables account sign-in using your Supabase project URL. | Unset |
-| `VITE_SUPABASE_ANON_KEY` | Public Supabase browser key for account sign-in and profiles. | Unset |
-| `PHOTOROOM_API_KEY` | Enables the optional **Remove background** action. | Unset |
-| `DECART_API_KEY` | Enables live camera outfit try-on. | Unset |
-| `OPENAI_API_KEY` | Enables daily outfit try-on. | Unset |
-| `OPENAI_IMAGE_MODEL` | Image model used for try-on. | `gpt-image-2` |
-| `OPENAI_IMAGE_QUALITY` | Image quality requested for try-on. | `high` |
+Restart the local server after changing configuration. Permanent AI keys must never use a `VITE_` prefix. Database connection credentials are only needed for the optional migration CLI, never for the browser or normal deployed app.
 
-The template also includes `OPENAI_VISION_MODEL` for separately invoked AI workflows. The app's manual imports and daily outfit suggestions do not use a vision model.
+## Privacy and API usage
 
-Standard imports work without API keys. For background removal, processing copies are resized to at most 6,000 pixels per side and 25 megapixels; the original remains available until you save. Previewing or removing a background does not save a clothing entry.
+Supabase Row Level Security restricts metadata and bucket objects to their owner. The app verifies sessions on the server and uses HttpOnly cookies. Photos upload directly to the private bucket; image requests redirect to short-lived, signed download URLs. Private APIs and images are not stored in the service-worker cache.
 
-Run the Vite dev or preview server for the local storage API; a static-only host cannot save uploads. Back up your data directory to preserve saved items and photos.
+Adding clothes, recommendations, building outfits, saving fits and viewing the local camera do not invoke paid AI providers. Photoroom runs only after **Remove background**. OpenAI runs only after **Try this look on me**. Decart starts only after **Start live try-on** and stops on close, manual stop, timeout or stalled video.
 
-The bundled AI skills remain available for separately requested workflows, but the app does not invoke them or resume old generation jobs.
+Photo previews are saved privately and reused for the same garments, metadata, reference photo, model and quality, including after a server restart. Changing those inputs creates a new preview request. AI previews are visualizations; they do not measure fit. Live video is not recorded.
 
-## Development
+Location is optional. With your permission, approximate coordinates are sent to Open-Meteo for weather; the app does not save them.
+
+## Deploy to Vercel
+
+The repository includes `vercel.json` and a Node function in `api/index.mjs`. The same API middleware runs locally and in production. Uploads bypass Vercel's request-body limit by going directly to Supabase; saved fits and previews pass small private object paths instead of image payloads.
+
+1. Link this repository to a Vercel project using the Vite preset.
+2. Configure the required Supabase variables and optional AI keys in Vercel's **Production** environment; set `APP_HTTPS=true`.
+3. Set Supabase's Site URL to the production origin and add `https://your-domain/app` to its allowed redirect URLs. Keep local redirects if developing locally.
+4. Run `npm run check`, commit and push, then deploy with `vercel --prod`.
+5. Verify `/api/health`, sign-in, private image loading, an upload and the outfit calendar.
+
+A static-only host cannot run the authenticated APIs. Local files, environment files, migrated account data and one-time migration capabilities are excluded from deployment and Git.
+
+See [deployment notes](docs/deployment.md) and [account/storage setup](docs/authentication.md).
+
+## Development and documentation
 
 | Command | Purpose |
 | --- | --- |
-| `npm run dev` | Start the development server at `http://localhost:5173`. |
-| `npm run seed:wardrobe` | Add the bundled sample wardrobe to local storage without replacing existing items. |
+| `npm run dev` | Start the local app and protected APIs. |
+| `npm test` | Run regression tests with mocked paid providers. |
 | `npm run build` | Build the frontend into `dist/`. |
-| `npm run preview` | Serve the built app locally at `http://localhost:4173`. |
-| `npm run check` | Run the production build check. |
-| `npm test` | Run the outfit, import, try-on, and video-worker regression tests. |
+| `npm run check` | Run all tests and the production build. |
+| `npm run preview` | Serve the built frontend and protected APIs locally. |
+| `npm run db:setup` | Apply the SQL migration using an optional server-only database URL. |
+| `npm run seed:wardrobe` | Legacy local sample-data utility; does not populate cloud accounts. |
 
-Run `npm run build` before `npm run preview`.
+- [Recommendation algorithm](docs/outfit-recommendations.md)
+- [Outfit builder and calendar](docs/outfit-builder.md)
+- [Private accounts and storage](docs/authentication.md)
+- [Deployment and verification](docs/deployment.md)
+
+The bundled [sample wardrobe](sample-wardrobe/README.md) includes image credits. PNGimg assets are **CC BY-NC 4.0** and require attribution and noncommercial use. Migration preserves their attribution metadata. Local backups are not automatically shared with new accounts.
+
+Application code is MIT licensed; third-party image licenses are separate.

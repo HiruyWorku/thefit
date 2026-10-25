@@ -122,16 +122,17 @@ test('unchanged restored fits reuse their saved preview without regenerating, wh
   assert.equal(await requestOutfitPreview(outfit, async () => { throw new Error('Must reuse saved preview'); }), image);
 });
 
-test('saving a restored preview reads only its local asset and sends it with the fit', async () => {
+test('saving a restored preview sends its private path without downloading or reuploading the photo', async () => {
   const image = '/api/outfits/saved/assets/00000000-0000-4000-8000-000000000002-preview.png';
   const bytes = Buffer.from('mock-local-photo');
   const urls = [];
   const fetcher = async (url, options) => {
     urls.push(url);
     if (url === image) return { ok: true, arrayBuffer: async () => bytes };
-    assert.equal(JSON.parse(options.body).previewDataUrl, `data:image/png;base64,${bytes.toString('base64')}`);
+    assert.equal(JSON.parse(options.body).previewDataUrl, null);
+    assert.equal(JSON.parse(options.body).previewImage, image);
     return { ok: true, json: async () => ({ id: 'fit', date: '2026-10-25' }) };
   };
   await saveFitOfDay({ chosen: [{ item: { id: 'shirt' } }] }, { date: '2026-10-25', previewDataUrl: image, fetcher });
-  assert.deepEqual(urls, [image, '/api/outfits/saved']);
+  assert.deepEqual(urls, ['/api/outfits/saved']);
 });

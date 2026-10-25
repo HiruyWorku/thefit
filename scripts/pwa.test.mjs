@@ -49,44 +49,44 @@ test("offline navigation and hashed assets use the installed shell", async () =>
   assert.equal(await app.request("/api/try-on"), undefined);
 });
 
-test("wardrobe uses the network then falls back to the last successful snapshot", async () => {
+test("private wardrobe data is never intercepted or cached", async () => {
   let offline = false;
   const app = setup(async () => {
     if (offline) throw new Error("offline");
     return Response.json([{ id: "shirt" }]);
   });
-  assert.deepEqual(await (await app.request("/api/import/wardrobe")).json(), [{ id: "shirt" }]);
+  assert.equal(await app.request("/api/import/wardrobe"), undefined);
   offline = true;
-  assert.deepEqual(await (await app.request("/api/import/wardrobe")).json(), [{ id: "shirt" }]);
-  await assert.rejects(app.request("/api/import/wardrobe/shirt", { method: "DELETE" }), /offline/);
+  assert.equal(await app.request("/api/import/wardrobe"), undefined);
+  assert.equal(await app.request("/api/import/wardrobe/shirt", { method: "DELETE" }), undefined);
 });
 
-test("activation preserves unrelated caches and primes the wardrobe", async () => {
+test("activation preserves unrelated caches and purges old private wardrobe snapshots", async () => {
   const app = setup(async () => Response.json([]));
-  for (const name of ["another-app", "the-fit-shell-old", "open-wardrobe-shell-v1", "the-fit-images-v1"]) await app.caches.open(name);
+  for (const name of ["another-app", "the-fit-shell-old", "open-wardrobe-shell-v1", "the-fit-images-v1", "the-fit-data-v1"]) await app.caches.open(name);
   await app.lifecycle("install");
   await app.lifecycle("activate");
   const keys = await app.caches.keys();
   assert.ok(keys.includes("another-app"));
-  assert.ok(keys.includes("the-fit-images-v1"));
+  assert.ok(!keys.includes("the-fit-images-v1"));
+  assert.ok(!keys.includes("the-fit-data-v1"));
   assert.ok(!keys.includes("the-fit-shell-old"));
   assert.ok(!keys.includes("open-wardrobe-shell-v1"));
-  assert.deepEqual(await (await (await app.caches.open("the-fit-data-v1")).match("/api/import/wardrobe")).json(), []);
 });
 
-test("viewed library images remain available without the network", async () => {
+test("private library images are never intercepted or cached", async () => {
   let calls = 0;
   const app = setup(async () => { calls++; return new Response("photo", { headers: { "Content-Type": "image/png" } }); });
   const url = "/api/import/library/shirt.png";
   await app.request(url);
-  assert.equal(await (await app.request(url)).text(), "photo");
-  assert.equal(calls, 1);
+  assert.equal(await app.request(url), undefined);
+  assert.equal(calls, 0);
 });
 
-test("successful writes refresh the offline wardrobe snapshot", async () => {
+test("writes never create an offline wardrobe snapshot", async () => {
   let calls = 0;
   const app = setup(async () => { calls++; return Response.json(calls === 1 ? { ok: true } : [{ id: "new-shirt" }]); });
   await app.request("/api/import/wardrobe", { method: "POST" });
-  const cache = await app.caches.open("the-fit-data-v1");
-  assert.deepEqual(await (await cache.match("/api/import/wardrobe")).json(), [{ id: "new-shirt" }]);
+  assert.equal(calls, 0);
+  assert.ok(!(await app.caches.keys()).includes('the-fit-data-v1'));
 });
