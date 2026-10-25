@@ -124,7 +124,6 @@ export function WardrobeImportFlow({ onGarmentApproved }) {
           </div>
           <div className="import-actions"><button className="import-button" type="button" disabled={busy} onClick={() => patchItem(item.id, { step: "photo" })}>Back to photo</button><button className="import-button" type="button" disabled={busy} onClick={() => { setItems(current => current.filter(entry => entry.id !== item.id)); setError(""); }}><Trash size={14} /> Remove photo</button><button className="import-button import-button--primary" disabled={!valid || busy}>{busy ? <SpinnerGap className="import-spinner" size={14} /> : <Check size={14} />} {busy ? "Saving…" : "Save item"}</button></div>
         </form> : <div className="import-drop-target"><UploadSimple size={28} /><h2>Choose or paste an item photo</h2><p>Choose one photo per item. Next, enter its name, category, color, and details before saving.</p><button className="import-button import-button--primary" onClick={() => inputRef.current?.click()}>Choose photos</button></div>}
-        {item && <div className="import-actions"><button className="import-button" onClick={() => inputRef.current?.click()}><Plus size={14} /> Add more photos</button></div>}
         {error && <p className="import-status is-error" role="alert">{error}</p>}
       </section>
     </div>}
