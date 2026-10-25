@@ -19,7 +19,7 @@ npm install
 npm run dev
 ```
 
-Open [localhost:5173](http://localhost:5173). No API key or reference photo is required.
+Open [localhost:5173](http://localhost:5173) for the landing page, then choose **Open Closet**, or go directly to [the wardrobe](http://localhost:5173/app). Local wardrobe features work without account sign-in, paid API keys, or a reference photo.
 
 To enable optional background removal or outfit try-on, copy the configuration template if you do not already have a `.env.local` file:
 
@@ -59,7 +59,7 @@ The outfit board stays beside the gallery on desktop and appears above it on mob
 
 Building or changing an outfit makes no paid API calls. Once at least one piece is selected, the existing live and photo try-on actions become available. Live first opens a free camera preview and still requires an explicit paid start. Photo generation starts only on its button, shares concurrent requests for the same look, and reuses the five most recent completed previews in memory until the page reloads.
 
-Use **Save fit of the day** on a custom or suggested outfit to keep its selected pieces, the local calendar date, and any existing photo preview. Saving does not require a try-on and never calls a paid provider. **Saved fits** lists the dated looks; **Load in builder** restores available wardrobe pieces for editing or another try-on. Repeated saves of an unchanged outfit on the same day reuse the same record; another selection or date creates a separate entry. Saved garment snapshots remain viewable after an original wardrobe item is removed, and missing pieces are called out when restoring the fit.
+Use **Save fit of the day** on a custom or suggested outfit to keep its selected pieces, the local calendar date, and any existing photo preview. Saving does not require a try-on and never calls a paid provider. **Saved fits** opens a monthly outfit calendar: marked days have saved looks, selecting a day reveals them, and **Today** returns to the current date. Month arrows and keyboard arrows navigate the calendar. **Load in builder** restores available wardrobe pieces for editing or another try-on. Repeated saves of an unchanged outfit on the same day reuse the same record; another selection or date creates a separate entry. Saved garment snapshots remain viewable after an original wardrobe item is removed, and missing pieces are called out when restoring the fit.
 
 Saved fits are local server data in `data/saved-outfits.json` and `data/saved-outfits/` (or the configured data directory), and remain ignored by Git. Back up the whole data directory to preserve this history. Loading an unchanged saved fit reuses its saved photo preview without regenerating it; changes to the selected pieces or their details invalidate that reuse. Live video is not recorded by the save action; it stores the selected garments and any already-generated photo preview.
 
@@ -75,10 +75,12 @@ With `DECART_API_KEY` set in `.env.local`, select **See this outfit live** in a 
 
 ## Configuration
 
-Set these values in `.env.local` and restart the server after changes. API keys stay on the server; keep them out of source control.
+Set these values in `.env.local` and restart the server after changes. Paid provider keys stay on the server; keep all real credentials out of source control. Supabase's `VITE_` settings are its public browser configuration. See [account setup and storage behavior](docs/authentication.md).
 
 | Variable | Purpose | Default |
 | --- | --- | --- |
+| `VITE_SUPABASE_URL` | Enables account sign-in using your Supabase project URL. | Unset |
+| `VITE_SUPABASE_ANON_KEY` | Public Supabase browser key for account sign-in and profiles. | Unset |
 | `PHOTOROOM_API_KEY` | Enables the optional **Remove background** action. | Unset |
 | `DECART_API_KEY` | Enables live camera outfit try-on. | Unset |
 | `OPENAI_API_KEY` | Enables daily outfit try-on. | Unset |

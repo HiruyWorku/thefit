@@ -1,0 +1,24 @@
+.auth-panel { width: min(100%, 440px); padding: 28px; border: 1px solid rgba(26,54,93,.2); border-radius: 12px; background: #f9f8f6; color: #1c2321; }
+.auth-panel h3 { margin: 0 0 22px; font-size: 26px; font-weight: 500; letter-spacing: -.025em; }
+.auth-panel p { font-size: 13px; line-height: 1.7; margin: 16px 0; }
+.auth-mode { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid rgba(26,54,93,.2); }
+.auth-mode button { flex: 1; min-height: 44px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: #526172; font: inherit; font-size: 13px; cursor: pointer; }
+.auth-mode button[aria-pressed="true"] { border-bottom-color: #1a365d; color: #1a365d; }
+.auth-panel fieldset { display: grid; gap: 18px; min-width: 0; padding: 0; margin: 0; border: 0; }
+.auth-panel label { display: grid; gap: 7px; font-size: 13px; }
+.auth-panel input { width: 100%; min-height: 44px; border: 1px solid rgba(26,54,93,.3); padding: 10px 12px; border-radius: 6px; background: transparent; font: inherit; color: #1c2321; }
+.auth-panel small { color: #526172; font-size: 11px; line-height: 1.5; }
+.auth-panel .auth-primary { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 18px; border: 1px solid #1a365d; border-radius: 24px; color: #f9f8f6; background: #1a365d; font: inherit; font-size: 13px; text-decoration: none; cursor: pointer; }
+.auth-panel fieldset:disabled { opacity: .6; }
+.auth-panel button:focus-visible, .auth-panel a:focus-visible, .auth-panel input:focus-visible { outline: 2px solid #1a365d; outline-offset: 3px; }
+.auth-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; }
+.auth-actions > button { min-height: 44px; border: 0; background: transparent; color: #1a365d; font: inherit; text-decoration: underline; cursor: pointer; }
+.auth-panel .auth-error { color: #8a302b; }
+.auth-panel .auth-storage-note { margin-bottom: 0; color: #526172; font-size: 11px; }
+.app-site-nav { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 18px 56px; border-bottom: 1px solid var(--line); color: var(--ink); font-size: 12px; }
+.app-site-nav > a { font-size: 19px; font-weight: 600; letter-spacing: -.025em; text-decoration: none; color: inherit; }
+.app-site-nav > div { display: flex; align-items: center; gap: 18px; min-width: 0; }
+.app-site-nav span { overflow-wrap: anywhere; }
+.app-site-nav button, .app-site-nav > div a { min-height: 40px; display: inline-flex; align-items: center; border: 0; background: transparent; color: var(--ink); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.app-account-notice { margin: 14px 56px 0; color: var(--muted); font-size: 12px; }
+@media (max-width: 650px) { .app-site-nav { padding: 12px 18px; } .app-account-notice { margin-inline: 18px; } .auth-panel { padding: 22px; } }
