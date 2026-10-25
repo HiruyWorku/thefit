@@ -1,10 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Check, Plus, Trash, X } from "@phosphor-icons/react";
+import { Check, PencilSimple, Plus, Trash, X } from "@phosphor-icons/react";
 import { WardrobeImportFlow } from "./import-flow.jsx";
 import { DailySuggestions } from "./DailySuggestions.jsx";
 import { OptimizedImage } from "./OptimizedImage.jsx";
 import { CategoryFields } from "./CategoryFields.jsx";
 import { CATEGORIES, GARMENT_TYPES, getGarmentType, getItemCategory, filterWardrobe, validGarmentType } from "./garment-types.mjs";
+import { OutfitBuilder } from "./OutfitBuilder.jsx";
+import { SavedFits } from "./SavedFits.jsx";
+import { savedPreviewMatches } from "./saved-fits.mjs";
+import { rememberOutfitPreview } from "./outfit-preview.mjs";
+import { BUILDER_SLOTS, BUILDER_STORAGE_KEY, OUTFIT_DRAG_TYPE, addBuilderItem, builderSlotFor, customizeOutfit, parseBuilderDraft, resolveBuilderOutfit } from "./outfit-builder.mjs";
+import "./outfit-builder.css";
 
 const STORAGE_KEY = "open-wardrobe-edits-v1";
 const DELETED_STORAGE_KEY = "open-wardrobe-deleted-v1";
@@ -102,16 +108,21 @@ function sampleImageColor(image, canvas, event) {
   return null;
 }
 
-function GalleryItem({ item, selected, onOpen }) {
+function GalleryItem({ item, selected, onOpen, building = false, inFit = false, onPick }) {
   const type = getGarmentType(item)?.label || TYPE_MAP[getItemCategory(item)]?.singular || "wardrobe item";
+  const canPick = !!builderSlotFor(item);
 
   return (
+    <div className={`gallery-piece${building ? ' is-selectable' : ''}`}>
     <button
-      className={`gallery-item${selected ? " selected" : ""}`}
+      className={`gallery-item${selected ? " selected" : ""}${building && inFit ? ' in-fit' : ''}`}
       type="button"
-      onClick={() => onOpen(item.id)}
-      aria-label={`Edit ${item.name || type}`}
-      aria-pressed={selected}
+      onClick={event => building ? onPick(item.id, null, event.detail === 0) : onOpen(item.id)}
+      disabled={building && !canPick}
+      draggable={building && canPick}
+      onDragStart={event => { event.dataTransfer.setData(OUTFIT_DRAG_TYPE, item.id); event.dataTransfer.effectAllowed = 'copy'; }}
+      aria-label={`${building ? 'Add' : 'Edit'} ${item.name || type}${building ? ' to your fit' : ''}`}
+      aria-pressed={building ? inFit : selected}
       data-testid={`wardrobe-item-${item.id}`}
     >
       <OptimizedImage
@@ -120,7 +131,10 @@ function GalleryItem({ item, selected, onOpen }) {
         sizes="(max-width: 520px) calc(50vw - 16px), (max-width: 860px) calc(33vw - 18px), 180px"
         breakpoints={[120, 180, 240, 320, 480]}
       />
+      {building && inFit && <span className="gallery-in-fit"><Check size={14} weight="bold" aria-hidden="true" /><span>In your fit</span></span>}
     </button>
+    {building && <><p className="gallery-piece-name">{item.name || type}</p><button type="button" className="gallery-piece-edit" onClick={() => onOpen(item.id)} aria-label={`Edit ${item.name || type}`}><PencilSimple size={16} aria-hidden="true" /></button></>}
+    </div>
   );
 }
 
@@ -426,6 +440,24 @@ export function App() {
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [outfitMode, setOutfitMode] = useState('suggested');
+  const [builderSelection, setBuilderSelection] = useState(() => {
+    try { return parseBuilderDraft(localStorage.getItem(BUILDER_STORAGE_KEY)); } catch { return {}; }
+  });
+  const [activeSlot, setActiveSlot] = useState(null);
+  const [builderMessage, setBuilderMessage] = useState('');
+  const [draftStorageError, setDraftStorageError] = useState(false);
+  const boardRef = useRef(null);
+  const galleryHeaderRef = useRef(null);
+  const building = outfitMode === 'builder';
+  const viewingSaved = outfitMode === 'saved';
+  const builtOutfit = useMemo(() => resolveBuilderOutfit(builderSelection, items), [builderSelection, items]);
+  const selectedBuilderIds = new Set(builtOutfit.chosen.map(({ item }) => item.id));
+
+  useEffect(() => {
+    try { localStorage.setItem(BUILDER_STORAGE_KEY, JSON.stringify(builderSelection)); setDraftStorageError(false); }
+    catch { setDraftStorageError(true); }
+  }, [builderSelection]);
 
   useEffect(() => {
     fetch("/api/import/wardrobe", { cache: "no-store" })
@@ -460,6 +492,68 @@ export function App() {
     setActiveType(typeId);
     setActiveGarmentType("all");
     setSelectedId(null);
+    if (building) setActiveSlot(BUILDER_SLOTS.find(slot => slot.part === typeId)?.id || null);
+    if (building) setBuilderMessage('');
+  };
+
+  const scrollBuilderArea = target => {
+    if (!window.matchMedia('(max-width: 900px)').matches) return;
+    requestAnimationFrame(() => (target === 'board' ? boardRef : galleryHeaderRef).current?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }));
+  };
+  const focusBuilderSlot = (slotId, scroll = true, keyboard = false) => {
+    const slot = BUILDER_SLOTS.find(entry => entry.id === slotId);
+    setActiveSlot(slot?.id || null);
+    setActiveType(slot?.part || 'all');
+    setActiveGarmentType('all');
+    setSelectedId(null);
+    if (scroll) scrollBuilderArea(slot ? 'gallery' : 'board');
+    if (keyboard) requestAnimationFrame(() => (slot ? galleryHeaderRef.current?.parentElement.querySelector('.gallery-item:not(:disabled)') : boardRef.current)?.focus({ preventScroll: true }));
+  };
+  const openBuilder = () => {
+    setOutfitMode('builder');
+    focusBuilderSlot(null, false);
+    setBuilderMessage('');
+  };
+  const chooseSlot = (slotId, scroll = true, keyboard = false) => {
+    setBuilderMessage(builtOutfit.bySlot[slotId] ? 'Choose a replacement. The rest of your fit stays as it is.' : 'Choose a piece from your wardrobe to fill this slot.');
+    focusBuilderSlot(slotId, scroll, keyboard);
+  };
+  const chooseBuilderItem = (id, targetSlot = null, keyboard = false) => {
+    const item = items.find(entry => entry.id === id);
+    const next = addBuilderItem(builderSelection, item, targetSlot);
+    if (!next) {
+      const expected = BUILDER_SLOTS.find(slot => slot.id === builderSlotFor(item));
+      setBuilderMessage(expected ? `${item.name} belongs in ${expected.label.toLowerCase()}. Drop it in that slot.` : 'Choose a top, bottoms, footwear, outerwear or headwear for this fit.');
+      return;
+    }
+    setBuilderSelection(next);
+    setBuilderMessage(`${item.name} added. Add another piece, save this fit, or try it on.`);
+    focusBuilderSlot(null, true, keyboard);
+  };
+  const removeBuilderItem = slotId => {
+    setBuilderSelection(current => { const next = { ...current }; delete next[slotId]; return next; });
+    setBuilderMessage('Piece removed. Choose a replacement whenever you like.');
+    focusBuilderSlot(slotId, false);
+  };
+  const clearBuilder = () => {
+    setBuilderSelection({});
+    setBuilderMessage('Outfit cleared. Choose any pieces to start again.');
+    focusBuilderSlot(null, false);
+  };
+  const customizeSuggestion = outfit => {
+    const next = customizeOutfit(outfit);
+    setBuilderSelection(next);
+    setOutfitMode('builder');
+    setBuilderMessage('Suggested look copied. Swap any piece to make it yours.');
+    focusBuilderSlot(null, false);
+  };
+  const loadSavedFit = fit => {
+    const next = customizeOutfit({ chosen: fit.items.map(item => ({ item })) });
+    const restored = resolveBuilderOutfit(next, items);
+    if (savedPreviewMatches(fit, restored)) rememberOutfitPreview(restored, fit.previewImage);
+    setBuilderSelection(next); setOutfitMode('builder');
+    focusBuilderSlot(null, false);
+    setBuilderMessage(restored.chosen.length < fit.items.length ? 'Saved fit loaded. Some pieces are no longer in your wardrobe; choose replacements for those slots.' : 'Saved fit loaded. Swap a piece or try it on again.');
   };
 
   const saveItem = async (updatedItem) => {
@@ -501,8 +595,14 @@ export function App() {
   return (
     <div className={`app-shell with-daily-panel${selectedItem ? " has-selection" : ""}`}>
       <main className="gallery-pane">
-        <DailySuggestions items={items} onOpen={setSelectedId} />
-        <header className="gallery-header">
+        <header className="outfit-workspace-heading"><h1>Your wardrobe</h1><div className="outfit-mode-switch" role="group" aria-label="Outfit mode"><button type="button" aria-pressed={outfitMode === 'suggested'} onClick={() => { setOutfitMode('suggested'); setSelectedId(null); setActiveType('all'); setActiveGarmentType('all'); }}>Suggested outfit</button><button type="button" aria-pressed={building} onClick={openBuilder}>Build a fit</button><button type="button" aria-pressed={viewingSaved} onClick={() => { setOutfitMode('saved'); setSelectedId(null); }}>Saved fits</button></div></header>
+        <div hidden={outfitMode !== 'suggested'}><DailySuggestions items={items} onOpen={setSelectedId} onCustomize={customizeSuggestion} active={outfitMode === 'suggested'} onViewSaved={() => setOutfitMode('saved')} /></div>
+        {viewingSaved && <SavedFits onLoad={loadSavedFit} onBuild={openBuilder} />}
+        {!viewingSaved && <div className={`wardrobe-workspace${building ? ' is-building' : ''}`}>
+        {building && <OutfitBuilder outfit={builtOutfit} activeSlot={activeSlot} onChooseSlot={chooseSlot} onRemove={removeBuilderItem} onClear={clearBuilder} onDropItem={chooseBuilderItem} storageError={draftStorageError} boardRef={boardRef} onViewSaved={() => setOutfitMode('saved')} />}
+        <div className="wardrobe-collection">
+        <header className="gallery-header" ref={galleryHeaderRef}>
+          {building && <div className="builder-context"><div><h2>{activeSlot ? BUILDER_SLOTS.find(slot => slot.id === activeSlot)?.prompt : 'Make it yours'}</h2><p role="status">{builderMessage || 'Tap a piece to add it, or use the pencil to edit its details.'}</p></div><button type="button" onClick={() => boardRef.current?.scrollIntoView({ behavior: 'auto', block: 'start' })}>View your fit</button></div>}
           <div className="gallery-meta-row">
             <p className="piece-count" aria-live="polite">{activeType === "all" ? items.length : `${visibleItems.length} of ${items.length}`} {items.length === 1 ? "piece" : "pieces"}</p>
           </div>
@@ -535,10 +635,15 @@ export function App() {
                 item={item}
                 selected={selectedId === item.id}
                 onOpen={setSelectedId}
+                building={building}
+                inFit={selectedBuilderIds.has(item.id)}
+                onPick={chooseBuilderItem}
               />
             ))}
           </section>
         )}
+        </div>
+        </div>}
       </main>
 
       {selectedItem && <ItemViewer item={selectedItem} onClose={() => setSelectedId(null)} onSave={saveItem} onDelete={deleteItem} />}

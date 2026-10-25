@@ -51,6 +51,18 @@ Smart casual requires collared tops or simple knitwear, refined full-length bott
 
 The local engine balances combined layer warmth, rain coverage, formality, and color harmony. Each piece has a short explanation; wardrobe gaps and inferred category corrections are shown. **Try another look** cycles through distinct combinations close to the best score without relaxing the weather rules. This uses descriptive metadata and transparent heuristics, not a vision model or measured clothing performance. Recommendations do not call OpenAI, Photoroom, or Decart. See [the algorithm notes](docs/outfit-recommendations.md) for the rules and limitations.
 
+## Build your own outfit
+
+Choose **Build a fit** beside **Suggested outfit**. All five slots—**Top**, **Bottoms**, **Footwear**, **Outerwear**, and **Headwear**—are optional. Tap a slot and then a piece in the filtered wardrobe. Selecting another piece replaces that slot; use the remove button to empty a slot or **Clear outfit** to start again. Desktop users can also drag a wardrobe piece into its matching slot. The pencil beside a garment still opens its editor.
+
+The outfit board stays beside the gallery on desktop and appears above it on mobile. **View your fit** returns to the board after browsing. The draft stays on the current device, and edits to a selected garment are reflected automatically; deleted or reclassified garments leave their old slots empty. On a daily suggestion, **Customize this look** starts a draft from those pieces. Switching modes preserves the suggestion and custom draft separately.
+
+Building or changing an outfit makes no paid API calls. Once at least one piece is selected, the existing live and photo try-on actions become available. Live first opens a free camera preview and still requires an explicit paid start. Photo generation starts only on its button, shares concurrent requests for the same look, and reuses the five most recent completed previews in memory until the page reloads.
+
+Use **Save fit of the day** on a custom or suggested outfit to keep its selected pieces, the local calendar date, and any existing photo preview. Saving does not require a try-on and never calls a paid provider. **Saved fits** lists the dated looks; **Load in builder** restores available wardrobe pieces for editing or another try-on. Repeated saves of an unchanged outfit on the same day reuse the same record; another selection or date creates a separate entry. Saved garment snapshots remain viewable after an original wardrobe item is removed, and missing pieces are called out when restoring the fit.
+
+Saved fits are local server data in `data/saved-outfits.json` and `data/saved-outfits/` (or the configured data directory), and remain ignored by Git. Back up the whole data directory to preserve this history. Loading an unchanged saved fit reuses its saved photo preview without regenerating it; changes to the selected pieces or their details invalidate that reuse. Live video is not recorded by the save action; it stores the selected garments and any already-generated photo preview.
+
 ## Preview an outfit on yourself
 
 After getting a daily suggestion, click **Try this look on me**. Set `OPENAI_API_KEY` in `.env.local` and add your reference photo at `data/model-reference.png`, then restart the server. To use another local photo path, update the reference photo setting shown in `.env.example`. `OPENAI_IMAGE_MODEL` defaults to `gpt-image-2`; `OPENAI_IMAGE_QUALITY` defaults to `high`.
